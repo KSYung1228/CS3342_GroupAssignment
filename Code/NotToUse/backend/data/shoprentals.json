@@ -57,7 +57,7 @@
       "baseRent" : 18000.0,
       "location" : "Ground Floor West",
       "shopTypeId" : "type-001",
-      "facilities" : [ "display shelving" ],
+      "facilities" : [ ],
       "complianceStatus" : "COMPLIANT",
       "status" : "AVAILABLE",
       "gridRow" : 0,
@@ -211,6 +211,46 @@
       "status" : "ACTIVE"
     }
   },
-  "contracts" : { },
+  "contracts" : {
+    "b5b1e7dc-561d-4c33-8459-3d23cc4ba604" : {
+      "id" : "b5b1e7dc-561d-4c33-8459-3d23cc4ba604",
+      "merchantId" : "mer-001",
+      "shopId" : "shop-001",
+      "startTime" : "2026-03-24",
+      "endTime" : "2027-03-24",
+      "rentPerMonth" : 18000.0,
+      "rentCycle" : "MONTHLY",
+      "status" : "TERMINATED",
+      "contractState" : "TERMINATED",
+      "deposit" : 36000.0,
+      "adminId" : "admin-003"
+    },
+    "889be5bc-1b56-49e0-9c78-de4d83dc56fc" : {
+      "id" : "889be5bc-1b56-49e0-9c78-de4d83dc56fc",
+      "merchantId" : "mer-001",
+      "shopId" : "shop-008",
+      "startTime" : "2026-03-24",
+      "endTime" : "2027-03-24",
+      "rentPerMonth" : 17000.0,
+      "rentCycle" : "MONTHLY",
+      "status" : "TERMINATED",
+      "contractState" : "TERMINATED",
+      "deposit" : 34000.0,
+      "adminId" : "admin-003"
+    },
+    "9af67270-28e2-479c-b610-ef0f9c9350c6" : {
+      "id" : "9af67270-28e2-479c-b610-ef0f9c9350c6",
+      "merchantId" : "mer-001",
+      "shopId" : "shop-004",
+      "startTime" : "2026-03-24",
+      "endTime" : "2027-03-31",
+      "rentPerMonth" : 36400.0,
+      "rentCycle" : "MONTHLY",
+      "status" : "PENDING",
+      "contractState" : "PENDING_APPROVAL",
+      "deposit" : 72800.0,
+      "adminId" : null
+    }
+  },
   "payments" : { }
 }
