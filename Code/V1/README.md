@@ -42,6 +42,8 @@ Expected output includes:
 After launching the program, enter username/password directly.
 The system automatically opens the corresponding role menu.
 
+You can also type `register` at login prompt to create a new tenant account.
+
 - Tenant: `freshMart / pass`
 - ContractManager: `cm / pass`
 - Accounting: `acct / pass`
@@ -52,7 +54,7 @@ Each role has its own menu:
 - Tenant: view open shops, create lease request, select active contract, upload monthly sales, view all state
 - ContractManager: list contracts, select active contract, approve contract, update shop status
 - Accounting: list payments, select active payment, confirm payment, inspect shops
-- SystemAdmin: change/view user permission
+- SystemAdmin: user create/update/delete/list, change/view permission, shop create/update/delete
 
 Suggested full flow:
 
@@ -65,4 +67,5 @@ Suggested full flow:
 
 - Application state is automatically saved to `Code/V1/data/app-state.properties`.
 - Saved data includes: shop status, all contracts, all payments, active contract/payment selection, admin permissions, and next ID counters.
+- Saved data also includes all user accounts (username, role, password) and user id counter.
 - To reset to a fresh state, delete `Code/V1/data/app-state.properties` and run again.
