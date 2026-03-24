@@ -1,0 +1,275 @@
+/* ============================================================
+   Base Reset & Variables
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --bg: #f1f5f9;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --text: #1e293b;
+  --muted: #64748b;
+  --radius: 10px;
+  --shadow: 0 2px 12px rgba(0,0,0,.08);
+}
+
+body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+
+/* ============================================================
+   Screens & Pages
+   ============================================================ */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: block; }
+
+.page { display: none; padding: 28px 36px; }
+.page.active { display: block; }
+
+.page-header {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.page-header h2 { flex: 1; font-size: 1.5rem; }
+
+/* ============================================================
+   Login
+   ============================================================ */
+#loginScreen, #registerScreen {
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+}
+#loginScreen.active, #registerScreen.active { display: flex; }
+
+.login-card {
+  background: var(--card); border-radius: 16px; padding: 40px 44px;
+  width: 380px; box-shadow: 0 8px 32px rgba(0,0,0,.25);
+}
+.login-card h1 { font-size: 1.7rem; margin-bottom: 4px; }
+.login-card .sub { color: var(--muted); font-size: .9rem; margin-bottom: 24px; }
+
+.tab-row { display: flex; gap: 8px; margin-bottom: 20px; }
+.tab-btn {
+  flex: 1; padding: 8px; border: 2px solid var(--border); border-radius: 8px;
+  background: transparent; cursor: pointer; font-size: .9rem; transition: all .2s;
+}
+.tab-btn.active { border-color: var(--primary); background: var(--primary); color: #fff; }
+
+.login-card input, .login-card select {
+  width: 100%; padding: 10px 12px; border: 1.5px solid var(--border);
+  border-radius: 8px; font-size: .95rem; margin-bottom: 12px; outline: none;
+  transition: border-color .2s;
+}
+.login-card input:focus { border-color: var(--primary); }
+
+/* ============================================================
+   Navbar
+   ============================================================ */
+.navbar {
+  display: flex; align-items: center; gap: 8px; padding: 0 24px;
+  height: 56px; background: #1e3a5f; color: #fff; flex-wrap: wrap;
+}
+.navbar .logo { font-size: 1.15rem; font-weight: 700; margin-right: 16px; }
+.nav-links { display: flex; gap: 4px; flex: 1; flex-wrap: wrap; }
+.nav-links button {
+  background: transparent; border: none; color: rgba(255,255,255,.8);
+  padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: .9rem;
+  transition: background .2s;
+}
+.nav-links button:hover { background: rgba(255,255,255,.15); }
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+.btn-primary, .btn-secondary, .btn-logout, .btn-danger, .btn-success {
+  padding: 9px 18px; border-radius: 8px; border: none; cursor: pointer;
+  font-size: .9rem; font-weight: 600; transition: filter .15s;
+}
+.btn-primary   { background: var(--primary); color: #fff; }
+.btn-primary:hover { filter: brightness(1.1); }
+.btn-secondary { background: var(--border); color: var(--text); }
+.btn-secondary:hover { filter: brightness(.95); }
+.btn-logout    { background: rgba(255,255,255,.15); color: #fff; }
+.btn-danger    { background: var(--danger); color: #fff; }
+.btn-success   { background: var(--success); color: #fff; }
+
+/* ============================================================
+   View Toggle
+   ============================================================ */
+.view-toggle { display: flex; gap: 4px; }
+.view-toggle button {
+  padding: 7px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+  background: transparent; cursor: pointer; font-size: .85rem; transition: all .2s;
+}
+.view-toggle button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* ============================================================
+   Filters
+   ============================================================ */
+.filter-row { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.filter-row select {
+  padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 8px;
+  font-size: .9rem; cursor: pointer;
+}
+
+/* ============================================================
+   Floor Plan Grid
+   ============================================================ */
+.floor-section { margin-bottom: 28px; }
+.floor-section h3 { font-size: 1rem; color: var(--muted); margin-bottom: 10px; }
+
+.floor-grid {
+  display: inline-grid; gap: 6px; padding: 12px;
+  background: #e8edf5; border-radius: 10px;
+}
+
+.grid-cell {
+  width: 96px; height: 72px; border-radius: 8px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; font-size: .72rem; font-weight: 600;
+  cursor: pointer; border: 2px solid transparent; transition: transform .15s, box-shadow .15s;
+  position: relative; overflow: hidden; text-align: center; padding: 4px;
+}
+.grid-cell:hover { transform: scale(1.04); box-shadow: 0 4px 16px rgba(0,0,0,.18); }
+.grid-cell.empty {
+  background: #dde3ed; color: #aaa; cursor: default; border-style: dashed;
+  border-color: #c0c8d8;
+}
+.grid-cell.empty:hover { transform: none; box-shadow: none; }
+
+/* Status colours */
+.grid-cell.AVAILABLE   { background: #dcfce7; border-color: #86efac; color: #14532d; }
+.grid-cell.OCCUPIED    { background: #fef9c3; border-color: #fde047; color: #713f12; }
+.grid-cell.MAINTENANCE { background: #fee2e2; border-color: #fca5a5; color: #7f1d1d; }
+
+.grid-cell .cell-num   { font-size: .8rem; font-weight: 700; }
+.grid-cell .cell-type  { font-size: .65rem; color: inherit; opacity: .8; }
+.grid-cell .cell-rent  { font-size: .65rem; }
+.grid-cell .cell-status-badge {
+  position: absolute; top: 3px; right: 4px; font-size: .55rem;
+  background: rgba(0,0,0,.15); padding: 1px 4px; border-radius: 4px;
+}
+
+/* Cell with image background */
+.grid-cell.has-image { background-size: cover; background-position: center; }
+.grid-cell.has-image .cell-overlay {
+  position: absolute; inset: 0; background: rgba(0,0,0,.45);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  color: #fff; border-radius: 6px;
+}
+
+/* Admin editable cell indicator */
+.grid-cell.admin-mode::after {
+  content: '✏'; position: absolute; bottom: 2px; left: 4px; font-size: .65rem; opacity: .6;
+}
+
+/* ============================================================
+   Shop Cards (List View)
+   ============================================================ */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+
+.shop-card {
+  background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+  overflow: hidden; cursor: pointer; transition: transform .15s;
+}
+.shop-card:hover { transform: translateY(-3px); }
+.shop-card .card-img {
+  width: 100%; height: 130px; object-fit: cover; background: #dde3ed;
+  display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 2rem;
+}
+.shop-card .card-img img { width: 100%; height: 100%; object-fit: cover; }
+.shop-card .card-body { padding: 14px; }
+.shop-card h4 { font-size: 1rem; margin-bottom: 4px; }
+.shop-card p  { font-size: .82rem; color: var(--muted); }
+
+/* ============================================================
+   Tables
+   ============================================================ */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+th { background: #f8fafc; padding: 10px 14px; text-align: left; font-weight: 600;
+     border-bottom: 2px solid var(--border); white-space: nowrap; }
+td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tr:hover td { background: #f8fafc; }
+
+/* ============================================================
+   Status Badges
+   ============================================================ */
+.badge {
+  display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: .75rem; font-weight: 600;
+}
+.badge-green   { background: #dcfce7; color: #14532d; }
+.badge-yellow  { background: #fef9c3; color: #713f12; }
+.badge-red     { background: #fee2e2; color: #7f1d1d; }
+.badge-blue    { background: #dbeafe; color: #1e3a8a; }
+.badge-gray    { background: #f1f5f9; color: #475569; }
+
+/* ============================================================
+   Report Cards
+   ============================================================ */
+.report-cards { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.report-card {
+  background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 20px 28px; min-width: 160px;
+}
+.report-card .rc-label { font-size: .82rem; color: var(--muted); margin-bottom: 6px; }
+.report-card .rc-value { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+
+/* ============================================================
+   Audit Log
+   ============================================================ */
+.audit-box {
+  background: #0f172a; color: #94a3b8; font-family: monospace; font-size: .8rem;
+  padding: 16px; border-radius: var(--radius); max-height: 240px; overflow-y: auto;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   Modals
+   ============================================================ */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.5);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
+}
+.modal {
+  background: var(--card); border-radius: 14px; padding: 32px 36px;
+  width: 460px; max-width: 95vw; max-height: 90vh; overflow-y: auto;
+  position: relative; box-shadow: 0 16px 48px rgba(0,0,0,.25);
+}
+.modal-close {
+  position: absolute; top: 14px; right: 16px; background: none; border: none;
+  font-size: 1.1rem; cursor: pointer; color: var(--muted);
+}
+.modal h3 { margin-bottom: 18px; font-size: 1.15rem; }
+.modal label {
+  display: block; font-size: .85rem; font-weight: 600; color: var(--muted);
+  margin-bottom: 12px;
+}
+.modal label input, .modal label select, .modal label textarea {
+  display: block; width: 100%; margin-top: 4px; padding: 8px 10px;
+  border: 1.5px solid var(--border); border-radius: 8px; font-size: .9rem;
+}
+.form-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+
+/* ============================================================
+   Shop Detail in Modal
+   ============================================================ */
+.shop-detail-img {
+  width: 100%; height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 16px;
+}
+.shop-detail-info p { margin-bottom: 8px; font-size: .9rem; }
+.shop-detail-info strong { color: var(--text); }
+
+/* ============================================================
+   Error / Success messages
+   ============================================================ */
+.error-msg  { color: var(--danger); font-size: .85rem; margin-top: 8px; text-align: center; }
+.success-msg{ color: var(--success); font-size: .85rem; margin-top: 8px; text-align: center; }
+
+/* ============================================================
+   Misc
+   ============================================================ */
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }

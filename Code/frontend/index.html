@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Commercial Shop Rental System</title>
+  <link rel="stylesheet" href="css/style.css?v=2" />
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="loginScreen" class="screen active">
+  <div class="login-card">
+    <h1>🏢 Shop Rental System</h1>
+    <p class="sub">Commercial Shop Rental Management System</p>
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="switchLoginTab('merchant')">Tenant Login</button>
+      <button class="tab-btn" onclick="switchLoginTab('admin')">Admin Login</button>
+    </div>
+    <div id="merchantLoginForm">
+      <input type="email" id="mEmail" placeholder="Email" />
+      <input type="password" id="mPass" placeholder="Password" />
+      <button class="btn-primary" onclick="merchantLogin()">Login</button>
+      <p style="text-align:center;margin-top:8px"><a href="#" onclick="showRegisterScreen()">Register as Merchant</a></p>
+    </div>
+    <div id="adminLoginForm" style="display:none">
+      <input type="text" id="aUser" placeholder="Username" />
+      <input type="password" id="aPass" placeholder="Password" />
+      <button class="btn-primary" onclick="adminLogin()">Login</button>
+    </div>
+    <p id="loginErr" class="error-msg"></p>
+  </div>
+</div>
+
+<!-- ===== REGISTER SCREEN ===== -->
+<div id="registerScreen" class="screen">
+  <div class="login-card">
+    <h2>Merchant Registration</h2>
+    <input type="text" id="regName" placeholder="Company Name" />
+    <input type="email" id="regEmail" placeholder="Email" />
+    <input type="password" id="regPass" placeholder="Password" />
+    <input type="text" id="regPhone" placeholder="Phone" />
+    <input type="text" id="regLicense" placeholder="Business License Number" />
+    <button class="btn-primary" onclick="registerMerchant()">Register</button>
+    <button class="btn-secondary" onclick="showScreen('loginScreen')">Back to Login</button>
+    <p id="regMsg" class="error-msg"></p>
+  </div>
+</div>
+
+<!-- ===== MERCHANT DASHBOARD ===== -->
+<div id="merchantDash" class="screen">
+  <nav class="navbar">
+    <span class="logo">🏢 Shop Rental</span>
+    <div class="nav-links">
+      <button onclick="showMerchantPage('shopBrowser')">Browse Shops</button>
+      <button onclick="showMerchantPage('myContracts')">My Contracts</button>
+      <button onclick="showMerchantPage('myPayments')">Payments</button>
+    </div>
+    <button class="btn-logout" onclick="logout()">Logout (<span id="mUserName"></span>)</button>
+  </nav>
+
+  <!-- Shop Browser -->
+  <div id="shopBrowser" class="page active">
+    <div class="page-header">
+      <h2>Browse Available Shops</h2>
+      <div class="view-toggle">
+        <button id="btnGridView" class="active" onclick="setView('grid')">🗺 Floor Plan</button>
+        <button id="btnListView" onclick="setView('list')">📋 List View</button>
+      </div>
+    </div>
+    <div class="filter-row">
+      <select id="filterBuilding" onchange="loadShops()">
+        <option value="">All Buildings</option>
+      </select>
+      <select id="filterType" onchange="loadShops()">
+        <option value="">All Types</option>
+      </select>
+      <select id="filterStatus" onchange="loadShops()">
+        <option value="">All Statuses</option>
+        <option value="AVAILABLE">Available</option>
+        <option value="OCCUPIED">Occupied</option>
+        <option value="MAINTENANCE">Maintenance</option>
+      </select>
+    </div>
+
+    <!-- Floor Plan Grid View -->
+    <div id="floorPlanView">
+      <div id="floorPlanContainer"></div>
+    </div>
+
+    <!-- List View -->
+    <div id="listView" style="display:none">
+      <div id="shopList" class="card-grid"></div>
+    </div>
+  </div>
+
+  <!-- My Contracts -->
+  <div id="myContracts" class="page">
+    <h2>My Lease Contracts</h2>
+    <div id="contractList" class="table-wrap"></div>
+  </div>
+
+  <!-- My Payments -->
+  <div id="myPayments" class="page">
+    <h2>Payments</h2>
+    <div id="paymentList" class="table-wrap"></div>
+  </div>
+</div>
+
+<!-- ===== ADMIN DASHBOARD ===== -->
+<div id="adminDash" class="screen">
+  <nav class="navbar">
+    <span class="logo">🔧 Admin Panel</span>
+    <div class="nav-links">
+      <button onclick="showAdminPage('adminDashboard')">Dashboard</button>
+      <button onclick="showAdminPage('adminBuildings')">Buildings</button>
+      <button onclick="showAdminPage('adminShops')">Shops</button>
+      <button onclick="showAdminPage('adminMerchants')">Merchants</button>
+      <button onclick="showAdminPage('adminContracts')">Contracts</button>
+      <button onclick="showAdminPage('adminPayments')">Payments</button>
+      <button onclick="showAdminPage('adminReports')">Reports</button>
+    </div>
+    <button class="btn-logout" onclick="logout()">Logout (<span id="aUserName"></span>)</button>
+  </nav>
+
+  <!-- Dashboard Overview -->
+  <div id="adminDashboard" class="page active">
+    <h2>Dashboard Overview</h2>
+    <div id="reportCards" class="report-cards"></div>
+    <h3 style="margin-top:24px">Audit Log</h3>
+    <div id="auditLogBox" class="audit-box"></div>
+  </div>
+
+  <!-- Buildings -->
+  <div id="adminBuildings" class="page">
+    <div class="page-header">
+      <h2>Buildings Management</h2>
+      <button class="btn-primary" onclick="openBuildingModal()">+ Add Building</button>
+    </div>
+    <div id="buildingTable" class="table-wrap"></div>
+  </div>
+
+  <!-- Shops – with floor plan editor -->
+  <div id="adminShops" class="page">
+    <div class="page-header">
+      <h2>Shop Management</h2>
+      <select id="adminBuildingSelect" onchange="loadAdminFloorPlan()">
+        <option value="">Select Building</option>
+      </select>
+      <button class="btn-primary" onclick="openShopModal(null)">+ Add Shop</button>
+    </div>
+    <div id="adminFloorPlanContainer"></div>
+    <div id="adminShopTable" class="table-wrap" style="margin-top:20px"></div>
+  </div>
+
+  <!-- Merchants -->
+  <div id="adminMerchants" class="page">
+    <h2>Merchant Management</h2>
+    <div id="merchantTable" class="table-wrap"></div>
+  </div>
+
+  <!-- Contracts -->
+  <div id="adminContracts" class="page">
+    <h2>Lease Contract Management</h2>
+    <div id="adminContractTable" class="table-wrap"></div>
+  </div>
+
+  <!-- Payments -->
+  <div id="adminPayments" class="page">
+    <h2>Payment Management</h2>
+    <div id="adminPaymentTable" class="table-wrap"></div>
+  </div>
+
+  <!-- Reports -->
+  <div id="adminReports" class="page">
+    <h2>Reports</h2>
+    <div id="reportDetail" class="report-cards"></div>
+  </div>
+</div>
+
+<!-- ===== MODALS ===== -->
+<!-- Shop Detail / Lease Modal -->
+<div id="shopModal" class="modal-overlay" style="display:none">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('shopModal')">✕</button>
+    <div id="shopModalContent"></div>
+  </div>
+</div>
+
+<!-- Shop Edit Modal (Manager) -->
+<div id="shopEditModal" class="modal-overlay" style="display:none">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('shopEditModal')">✕</button>
+    <h3 id="shopEditTitle">Edit Shop</h3>
+    <form id="shopEditForm" onsubmit="submitShopEdit(event)">
+      <input type="hidden" id="seId" />
+      <input type="hidden" id="seBuildingId" />
+      <label>Shop Number <input type="text" id="seNumber" required /></label>
+      <label>Floor <input type="number" id="seFloor" required /></label>
+      <label>Area (sq ft) <input type="number" step="0.1" id="seArea" required /></label>
+      <label>Base Rent (HKD/mo) <input type="number" step="0.01" id="seBaseRent" required /></label>
+      <label>Location <input type="text" id="seLocation" /></label>
+      <label>Shop Type
+        <select id="seShopType"></select>
+      </label>
+      <label>Grid Row <input type="number" id="seGridRow" min="0" /></label>
+      <label>Grid Col <input type="number" id="seGridCol" min="0" /></label>
+      <label>Status
+        <select id="seStatus">
+          <option value="AVAILABLE">Available</option>
+          <option value="OCCUPIED">Occupied</option>
+          <option value="MAINTENANCE">Maintenance</option>
+        </select>
+      </label>
+      <label>Compliance
+        <select id="seCompliance">
+          <option value="COMPLIANT">Compliant</option>
+          <option value="NON_COMPLIANT">Non-Compliant</option>
+          <option value="PENDING">Pending</option>
+        </select>
+      </label>
+      <label>Image URL <input type="text" id="seImageUrl" placeholder="images/shop.jpg" /></label>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">Save</button>
+        <button type="button" class="btn-secondary" onclick="closeModal('shopEditModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Building Edit Modal -->
+<div id="buildingModal" class="modal-overlay" style="display:none">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('buildingModal')">✕</button>
+    <h3>Building Details</h3>
+    <form id="buildingForm" onsubmit="submitBuilding(event)">
+      <input type="hidden" id="bldId" />
+      <label>Name <input type="text" id="bldName" required /></label>
+      <label>Address <input type="text" id="bldAddress" required /></label>
+      <label>Total Floors <input type="number" id="bldFloors" required /></label>
+      <label>Grid Rows <input type="number" id="bldRows" value="4" /></label>
+      <label>Grid Cols <input type="number" id="bldCols" value="5" /></label>
+      <label>Status
+        <select id="bldStatus">
+          <option value="ACTIVE">Active</option>
+          <option value="INACTIVE">Inactive</option>
+        </select>
+      </label>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">Save</button>
+        <button type="button" class="btn-secondary" onclick="closeModal('buildingModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Lease Application Modal -->
+<div id="leaseModal" class="modal-overlay" style="display:none">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('leaseModal')">✕</button>
+    <h3>Apply for Lease</h3>
+    <form id="leaseForm" onsubmit="submitLease(event)">
+      <input type="hidden" id="leaseShopId" />
+      <p id="leaseShopInfo" style="color:#555;margin-bottom:12px"></p>
+      <label>Start Date <input type="date" id="leaseStart" required /></label>
+      <label>End Date <input type="date" id="leaseEnd" required /></label>
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">Apply</button>
+        <button type="button" class="btn-secondary" onclick="closeModal('leaseModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/app.js?v=2"></script>
+</body>
+</html>
