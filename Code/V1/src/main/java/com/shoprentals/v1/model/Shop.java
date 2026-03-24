@@ -5,12 +5,18 @@ public class Shop {
     private String shopNum;
     private ShopStatus status;
     private double area;
+    private ShopType type;
 
-    public Shop(int shopId, String shopNum, ShopStatus status, double area) {
+    public Shop(int shopId, String shopNum, ShopStatus status, double area, ShopType type) {
         this.shopId = shopId;
         this.shopNum = shopNum;
         this.status = status;
         this.area = area;
+        this.type = type;
+    }
+
+    public Shop(int shopId, String shopNum, ShopStatus status, double area) {
+        this(shopId, shopNum, status, area, ShopType.SOLID);
     }
 
     public void updateStoreStatus(ShopStatus newStatus) {
@@ -20,6 +26,12 @@ public class Shop {
     public void editStoreInfo(String newShopNum, double newArea) {
         this.shopNum = newShopNum;
         this.area = newArea;
+    }
+
+    public void editStoreInfo(String newShopNum, double newArea, ShopType newType) {
+        this.shopNum = newShopNum;
+        this.area = newArea;
+        this.type = newType;
     }
 
     public int getShopId() {
@@ -38,6 +50,10 @@ public class Shop {
         return area;
     }
 
+    public ShopType getType() {
+        return type;
+    }
+
     @Override
     public String toString() {
         return "Shop{" +
@@ -45,6 +61,7 @@ public class Shop {
                 ", shopNum='" + shopNum + '\'' +
                 ", status=" + status +
                 ", area=" + area +
+                ", type=" + type +
                 '}';
     }
 }

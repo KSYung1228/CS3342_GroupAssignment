@@ -9,6 +9,7 @@ import com.shoprentals.v1.model.Payment;
 import com.shoprentals.v1.model.PaymentStatus;
 import com.shoprentals.v1.model.Shop;
 import com.shoprentals.v1.model.ShopStatus;
+import com.shoprentals.v1.model.ShopType;
 import com.shoprentals.v1.model.SystemAdmin;
 import com.shoprentals.v1.model.Tenant;
 import com.shoprentals.v1.model.User;
@@ -83,8 +84,8 @@ public class ShopRentalApplication {
         SystemAdmin systemAdmin = new SystemAdmin("U001", "admin", "admin123");
 
         List<Shop> allShops = new ArrayList<>();
-        allShops.add(new Shop(1, "A-101", ShopStatus.OPEN, 35.0));
-        allShops.add(new Shop(2, "A-102", ShopStatus.CLOSED, 40.0));
+        allShops.add(new Shop(1, "A-101", ShopStatus.OPEN, 35.0, ShopType.FNB));
+        allShops.add(new Shop(2, "A-102", ShopStatus.CLOSED, 40.0, ShopType.POPUP));
 
         AppContext ctx = new AppContext(
                 service,
@@ -619,7 +620,15 @@ public class ShopRentalApplication {
 
         System.out.print("Area: ");
         double area = Double.parseDouble(scanner.nextLine().trim());
-        Shop shop = new Shop(nextShopId, shopNum, ShopStatus.OPEN, area);
+
+        System.out.print("Type (F&B/POPUP/SOLID): ");
+        ShopType type = parseShopTypeInput(scanner.nextLine());
+        if (type == null) {
+            System.out.println("Invalid shop type.");
+            return;
+        }
+
+        Shop shop = new Shop(nextShopId, shopNum, ShopStatus.OPEN, area, type);
         ctx.allShops.add(shop);
         saveStateQuietly(ctx);
         System.out.println("Shop created. id=" + shop.getShopId());
@@ -636,7 +645,15 @@ public class ShopRentalApplication {
         String newShopNum = scanner.nextLine().trim();
         System.out.print("New area: ");
         double newArea = Double.parseDouble(scanner.nextLine().trim());
-        shop.editStoreInfo(newShopNum, newArea);
+
+        System.out.print("New type (F&B/POPUP/SOLID): ");
+        ShopType newType = parseShopTypeInput(scanner.nextLine());
+        if (newType == null) {
+            System.out.println("Invalid shop type.");
+            return;
+        }
+
+        shop.editStoreInfo(newShopNum, newArea, newType);
         saveStateQuietly(ctx);
         System.out.println("Shop updated.");
     }
@@ -716,7 +733,7 @@ public class ShopRentalApplication {
 
         System.out.println("Open shops:");
         for (Shop shop : openShops) {
-            System.out.println("- " + shop.getShopId() + " | " + shop.getShopNum() + " | area=" + shop.getArea());
+            System.out.println("- " + shop.getShopId() + " | " + shop.getShopNum() + " | type=" + shop.getType() + " | area=" + shop.getArea());
         }
     }
 
@@ -801,7 +818,7 @@ public class ShopRentalApplication {
         }
         System.out.println("Shops:");
         for (Shop shop : shops) {
-            System.out.println("- id=" + shop.getShopId() + ", num=" + shop.getShopNum() + ", status=" + shop.getStatus() + ", area=" + shop.getArea());
+            System.out.println("- id=" + shop.getShopId() + ", num=" + shop.getShopNum() + ", type=" + shop.getType() + ", status=" + shop.getStatus() + ", area=" + shop.getArea());
         }
     }
 
@@ -940,7 +957,8 @@ public class ShopRentalApplication {
                 String shopNum = props.getProperty("shop." + i + ".num", "S-" + shopId);
                 ShopStatus status = ShopStatus.valueOf(props.getProperty("shop." + i + ".status", ShopStatus.OPEN.name()));
                 double area = getDoubleProperty(props, "shop." + i + ".area", 30.0);
-                ctx.allShops.add(new Shop(shopId, shopNum, status, area));
+                ShopType type = getShopTypeProperty(props, "shop." + i + ".type", ShopType.SOLID);
+                ctx.allShops.add(new Shop(shopId, shopNum, status, area, type));
             }
         }
 
@@ -1046,6 +1064,7 @@ public class ShopRentalApplication {
             props.setProperty("shop." + i + ".num", shop.getShopNum());
             props.setProperty("shop." + i + ".status", shop.getStatus().name());
             props.setProperty("shop." + i + ".area", String.valueOf(shop.getArea()));
+            props.setProperty("shop." + i + ".type", shop.getType().name());
         }
 
         props.setProperty("user.count", String.valueOf(ctx.usersByUsername.size()));
@@ -1145,6 +1164,29 @@ public class ShopRentalApplication {
         } catch (NumberFormatException ex) {
             return defaultValue;
         }
+    }
+
+    private static ShopType getShopTypeProperty(Properties props, String key, ShopType defaultValue) {
+        String value = props.getProperty(key);
+        if (value == null || value.isBlank()) {
+            return defaultValue;
+        }
+        ShopType parsed = parseShopTypeInput(value);
+        return parsed == null ? defaultValue : parsed;
+    }
+
+    private static ShopType parseShopTypeInput(String input) {
+        if (input == null) {
+            return null;
+        }
+
+        String normalized = input.trim().toUpperCase();
+        return switch (normalized) {
+            case "F&B", "FNB" -> ShopType.FNB;
+            case "POPUP", "POP-UP", "POP_UP" -> ShopType.POPUP;
+            case "SOLID", "SOILD" -> ShopType.SOLID;
+            default -> null;
+        };
     }
 
     private static Shop findShopById(List<Shop> shops, int shopId) {
