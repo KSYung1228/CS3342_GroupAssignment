@@ -69,3 +69,43 @@ Suggested full flow:
 - Saved data includes: shop status, all contracts, all payments, active contract/payment selection, admin permissions, and next ID counters.
 - Saved data also includes all user accounts (username, role, password) and user id counter.
 - To reset to a fresh state, delete `Code/V1/data/app-state.properties` and run again.
+
+## HTML UI (V1 Folder)
+
+An HTML frontend is available at `Code/V1/frontend/index.html`.
+
+This UI is based on the V1 workflow and includes role-based screens for:
+
+- Tenant
+- ContractManager
+- Accounting
+- SystemAdmin
+
+### Open the UI
+
+1) Start the Java API server from `Code/V1` first:
+
+	PowerShell:
+	.\mvnw.cmd --% -DskipTests compile exec:java -Dexec.mainClass=com.shoprentals.v1.api.V1ApiServerApplication
+
+	Command Prompt (cmd.exe):
+	mvnw.cmd -DskipTests compile exec:java -Dexec.mainClass=com.shoprentals.v1.api.V1ApiServerApplication
+
+2) Open the UI in your browser:
+
+	http://localhost:8080
+
+You can still open `Code/V1/frontend/index.html` directly if needed.
+
+### Demo Accounts
+
+- `admin / admin123`
+- `freshMart / pass`
+- `cm / pass`
+- `acct / pass`
+
+### Notes
+
+- The frontend now calls the V1 Java API at `http://localhost:8080/api`.
+- Use the **Reset Demo Data** button in the UI header to reset backend in-memory demo state.
+- API mode now auto-loads `Code/V1/data/app-state.properties` on startup and auto-saves on each data-changing API operation.

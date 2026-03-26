@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shop Rental V1 UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Source+Sans+3:wght@400;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div class="bg-decor bg-decor-a"></div>
+    <div class="bg-decor bg-decor-b"></div>
+
+    <main class="app-shell">
+        <section id="loginView" class="view active">
+            <div class="auth-card glass">
+                <h1>Shop Rental V1</h1>
+                <p class="sub">HTML UI based on your V1 workflow</p>
+
+                <div class="tabs">
+                    <button id="tabLogin" class="tab active" type="button">Login</button>
+                    <button id="tabRegister" class="tab" type="button">Tenant Register</button>
+                </div>
+
+                <form id="loginForm" class="panel-form active">
+                    <label>Username
+                        <input id="loginUsername" type="text" required />
+                    </label>
+                    <label>Password
+                        <input id="loginPassword" type="password" required />
+                    </label>
+                    <button class="btn btn-primary" type="submit">Enter</button>
+                </form>
+
+                <form id="registerForm" class="panel-form">
+                    <label>Username
+                        <input id="regUsername" type="text" required />
+                    </label>
+                    <label>Password
+                        <input id="regPassword" type="password" required />
+                    </label>
+                    <button class="btn btn-primary" type="submit">Create Tenant Account</button>
+                </form>
+
+                <p class="hint">Default users: admin/admin123, freshMart/pass, cm/pass, acct/pass</p>
+                <p id="authMessage" class="message"></p>
+            </div>
+        </section>
+
+        <section id="appView" class="view">
+            <header class="topbar glass">
+                <div>
+                    <h2 id="welcomeText">Welcome</h2>
+                    <p id="roleText" class="sub"></p>
+                </div>
+                <div class="topbar-actions">
+                    <button id="btnResetData" class="btn btn-ghost" type="button">Reset Demo Data</button>
+                    <button id="btnLogout" class="btn btn-primary" type="button">Logout</button>
+                </div>
+            </header>
+
+            <nav id="roleNav" class="role-nav"></nav>
+
+            <section class="content-grid">
+                <article id="tenantShops" class="panel hidden">
+                    <div class="panel-head">
+                        <h3>Open Shops</h3>
+                        <span class="chip">Tenant</span>
+                    </div>
+                    <div id="tenantShopList" class="cards"></div>
+                </article>
+
+                <article id="tenantContracts" class="panel hidden">
+                    <div class="panel-head">
+                        <h3>My Contracts</h3>
+                        <span class="chip">Tenant</span>
+                    </div>
+                    <div id="tenantContractList" class="table-wrap"></div>
+                </article>
+
+                <article id="tenantSales" class="panel hidden">
+                    <div class="panel-head">
+                        <h3>Upload Monthly Sales</h3>
+                        <span class="chip">Tenant</span>
+                    </div>
+                    <form id="salesForm" class="inline-form">
+                        <label>Month
+                            <input id="salesMonth" type="month" required />
+                        </label>
+                        <label>Total Sales
+                            <input id="salesAmount" type="number" min="0" step="0.01" required />
+                        </label>
+                        <button class="btn btn-primary" type="submit">Generate Payment</button>
+                    </form>
+                    <p class="hint">Uses the active contract only.</p>
+                </article>
+
+                <article id="tenantPayments" class="panel hidden">
+                    <div class="panel-head">
+                        <h3>My Payments</h3>
+                        <span class="chip">Tenant</span>
+                    </div>
+                    <div id="tenantPaymentList" class="table-wrap"></div>
+                </article>
+
+                <article id="managerContracts" class="panel hidden">
+                    <div class="panel-head">
+                        <h3>Contract Queue</h3>
+                        <span class="chip">Contract Manager</span>
+                    </div>
+                    <div id="managerContractList" class="table-wrap"></div>
+                </article>
+
+                <article id="managerShops" class="panel hidden">
+                    <div class="panel-head">
+                        <h3>Shop Status Management</h3>
+                        <span class="chip">Contract Manager</span>
+                    </div>
+                    <div id="managerShopList" class="table-wrap"></div>
+                </article>
+
+                <article id="accountingPayments" class="panel hidden">
+                    <div class="panel-head">
+                        <h3>Payments Verification</h3>
+                        <span class="chip">Accounting</span>
+                    </div>
+                    <div id="accountingPaymentList" class="table-wrap"></div>
+                </article>
+
+                <article id="accountingInspect" class="panel hidden">
+                    <div class="panel-head">
+                        <h3>Shop Inspection Snapshot</h3>
+                        <span class="chip">Accounting</span>
+                    </div>
+                    <div id="inspectList" class="cards"></div>
+                </article>
+
+                <article id="adminUsers" class="panel hidden">
+                    <div class="panel-head">
+                        <h3>User Management</h3>
+                        <span class="chip">System Admin</span>
+                    </div>
+                    <form id="createUserForm" class="inline-form tight">
+                        <label>Role
+                            <select id="newUserRole">
+                                <option value="tenant">tenant</option>
+                                <option value="accounting">accounting</option>
+                                <option value="contractmanager">contractmanager</option>
+                                <option value="floor">floor</option>
+                            </select>
+                        </label>
+                        <label>Username
+                            <input id="newUsername" type="text" required />
+                        </label>
+                        <label>Password
+                            <input id="newUserPassword" type="text" required />
+                        </label>
+                        <button class="btn btn-primary" type="submit">Create User</button>
+                    </form>
+                    <div id="adminUserList" class="table-wrap"></div>
+                </article>
+
+                <article id="adminShops" class="panel hidden">
+                    <div class="panel-head">
+                        <h3>Shop CRUD</h3>
+                        <span class="chip">System Admin</span>
+                    </div>
+                    <form id="shopForm" class="inline-form tight">
+                        <label>Shop Number
+                            <input id="shopNum" type="text" required />
+                        </label>
+                        <label>Area
+                            <input id="shopArea" type="number" min="1" step="0.1" required />
+                        </label>
+                        <label>Type
+                            <select id="shopType">
+                                <option>FNB</option>
+                                <option>POPUP</option>
+                                <option>SOLID</option>
+                            </select>
+                        </label>
+                        <button class="btn btn-primary" type="submit">Create Shop</button>
+                    </form>
+                    <div id="adminShopList" class="table-wrap"></div>
+                </article>
+
+                <article id="auditLogPanel" class="panel hidden">
+                    <div class="panel-head">
+                        <h3>Activity Log</h3>
+                        <span class="chip">System</span>
+                    </div>
+                    <div id="auditLog" class="log-box"></div>
+                </article>
+            </section>
+
+            <p id="appMessage" class="message app-msg"></p>
+        </section>
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
