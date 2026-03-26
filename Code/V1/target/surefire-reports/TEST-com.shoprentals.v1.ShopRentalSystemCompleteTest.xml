@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.085" tests="30" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.11" tests="45" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -16,7 +16,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot\bin"/>
-    <property name="sun.java.command" value="C:\Users\ykswo\AppData\Local\Temp\surefire896590844672106024\surefirebooter-20260326163223895_3.jar C:\Users\ykswo\AppData\Local\Temp\surefire896590844672106024 2026-03-26T16-32-22_668-jvmRun1 surefire-20260326163223895_1tmp surefire_0-20260326163223895_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\ykswo\AppData\Local\Temp\surefire16236327084540275629\surefirebooter-20260326165848854_3.jar C:\Users\ykswo\AppData\Local\Temp\surefire16236327084540275629 2026-03-26T16-58-48_639-jvmRun1 surefire-20260326165848854_1tmp surefire_0-20260326165848854_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\ykswo\Desktop\CS3342_GroupAssignment\Code\V1\target\test-classes;C:\Users\ykswo\Desktop\CS3342_GroupAssignment\Code\V1\target\classes;C:\Users\ykswo\.m2\repository\com\google\code\gson\gson\2.11.0\gson-2.11.0.jar;C:\Users\ykswo\.m2\repository\com\google\errorprone\error_prone_annotations\2.27.0\error_prone_annotations-2.27.0.jar;C:\Users\ykswo\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.3\junit-jupiter-api-5.9.3.jar;C:\Users\ykswo\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\ykswo\.m2\repository\org\junit\platform\junit-platform-commons\1.9.3\junit-platform-commons-1.9.3.jar;C:\Users\ykswo\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\ykswo\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.9.3\junit-jupiter-engine-5.9.3.jar;C:\Users\ykswo\.m2\repository\org\junit\platform\junit-platform-engine\1.9.3\junit-platform-engine-1.9.3.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -31,7 +31,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\ykswo\AppData\Local\Temp\surefire896590844672106024\surefirebooter-20260326163223895_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\ykswo\AppData\Local\Temp\surefire16236327084540275629\surefirebooter-20260326165848854_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="17.0.17+10"/>
@@ -60,34 +60,55 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="testGetNextIds" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.029"/>
-  <testcase name="testPaymentContractFlow" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.004"/>
-  <testcase name="testNoOpenShops" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.003"/>
-  <testcase name="testContractManagerLogin" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.001"/>
+  <testcase name="testProgressiveCommission" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.033"/>
+  <testcase name="testPaymentContractFlow" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.001"/>
+  <testcase name="testAuditLogCoverage" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.007">
+    <system-out><![CDATA[[AUDIT] 2026-03-26T16:58:49.507896600 | TEST | MSG
+]]></system-out>
+  </testcase>
+  <testcase name="testNoOpenShops" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testSubmitMonthlySalesService" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.009"/>
+  <testcase name="testContractManagerLogin" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.002"/>
   <testcase name="testEditShopInfo" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testStateTransitionApprove" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.002"/>
   <testcase name="testGetCommissionRate" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
-  <testcase name="testCreatePayment" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
-  <testcase name="testTerminateContract" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.001"/>
+  <testcase name="testCreatePayment" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.001"/>
+  <testcase name="testTerminateContract" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
   <testcase name="testRequestApproval" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testShortTermFactory" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.004"/>
   <testcase name="testFindOpenShops" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
-  <testcase name="testMultipleContracts" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
-  <testcase name="testChangePassword" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.002"/>
-  <testcase name="testUserAuthenticationFlow" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.005"/>
-  <testcase name="testCreateSalesRecord" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.002"/>
+  <testcase name="testStateTransitionExpire" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testObserverBus" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.003"/>
+  <testcase name="testServiceIdSetters" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testChangePassword" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testTenantSpecifics" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testUserAuthenticationFlow" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.003"/>
+  <testcase name="testCreateSalesRecord" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
   <testcase name="testCalculateTotalRent" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testSalesRecordData" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
   <testcase name="testTenantLoginSuccess" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.002"/>
   <testcase name="testApproveContract" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
-  <testcase name="testSystemAdminLogin" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.001"/>
+  <testcase name="testSystemAdminLogin" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
   <testcase name="testCreateShop" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
   <testcase name="testCompleteContractFlow" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
   <testcase name="testAccountingLogin" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
-  <testcase name="testCreateLeaseContract" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.002"/>
-  <testcase name="testUpdateShopStatus" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
-  <testcase name="testGetUserInfo" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testFloorManager" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.001">
+    <system-out><![CDATA[Floor manager arranged store positions on floor 1
+]]></system-out>
+  </testcase>
+  <testcase name="testCreateLeaseContract" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testUpdateShopStatus" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.001"/>
+  <testcase name="testPaymentValidation" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.002"/>
+  <testcase name="testCreateLeaseRequestService" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.004"/>
+  <testcase name="testRestoreStatus" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testGetUserInfo" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.002"/>
   <testcase name="testMultipleShops" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
   <testcase name="testVerifyPayment" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
   <testcase name="testShopUnderRepair" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testIllegalTransitions" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.003"/>
   <testcase name="testTenantLoginFailure" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
-  <testcase name="testShopTenantRelationship" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
-  <testcase name="testMultiplePayments" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.002"/>
+  <testcase name="testApproveContractService" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.001"/>
+  <testcase name="testShopTenantRelationship" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.001"/>
+  <testcase name="testStateTransitionRequestApproval" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testStandardCommission" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
 </testsuite>

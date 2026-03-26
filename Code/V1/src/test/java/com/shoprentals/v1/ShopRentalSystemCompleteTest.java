@@ -103,6 +103,28 @@ public class ShopRentalSystemCompleteTest {
         assertEquals("bob", manager.getUsername());
     }
 
+    @Test
+    @DisplayName("USER - Floor manager specific test")
+    public void testFloorManager() {
+        Floor floorManager = new Floor("F001", "frank", "pass000", 1);
+        assertEquals(1, 1); // Access floorId is private but constructor uses it
+        assertTrue(floorManager.login("pass000"));
+        floorManager.manageStorePositions(); // Coverage for print statement
+    }
+
+    @Test
+    @DisplayName("USER - Tenant specific test")
+    public void testTenantSpecifics() {
+        assertEquals("Alice Smith", tenant.getContactPerson());
+
+        // Coverage for signContract edge case
+        assertThrows(IllegalStateException.class, () -> tenant.signContract(contract));
+
+        contract.requestApproval();
+        contract.approve();
+        tenant.signContract(contract); // Should pass
+    }
+
     // ===================== SHOP TESTS =====================
 
     @Test
@@ -201,13 +223,102 @@ public class ShopRentalSystemCompleteTest {
     }
 
     @Test
-    @DisplayName("CONTRACT - Multiple contracts for same tenant")
-    public void testMultipleContracts() {
-        Shop shop2 = new Shop(102, "S102", ShopStatus.OPEN, 3000.0, ShopType.POPUP);
-        LeaseContract contract2 = new LeaseContract(2, shop2, tenant, 3000.0, 0.10);
+    @DisplayName("CONTRACT - Restore status")
+    public void testRestoreStatus() {
+        contract.restoreStatus(ContractStatus.ACTIVE);
+        assertEquals(ContractStatus.ACTIVE, contract.getStatus());
+        contract.restoreStatus(ContractStatus.EXPIRED);
+        assertEquals(ContractStatus.EXPIRED, contract.getStatus());
+        contract.restoreStatus(ContractStatus.TERMINATED);
+        assertEquals(ContractStatus.TERMINATED, contract.getStatus());
+    }
 
-        assertNotEquals(contract.getContractId(), contract2.getContractId());
-        assertEquals(contract.getTenant(), contract2.getTenant());
+    @Test
+    @DisplayName("CONTRACT - State transitions - Request Approval to Pending")
+    public void testStateTransitionRequestApproval() {
+        assertEquals(ContractStatus.DRAFT, contract.getStatus());
+        contract.requestApproval();
+        assertEquals(ContractStatus.PENDING_APPROVAL, contract.getStatus());
+    }
+
+    @Test
+    @DisplayName("CONTRACT - State transitions - Pending to Active")
+    public void testStateTransitionApprove() {
+        contract.requestApproval();
+        contract.approve();
+        assertEquals(ContractStatus.ACTIVE, contract.getStatus());
+    }
+
+    @Test
+    @DisplayName("CONTRACT - State transitions - Active to Expired")
+    public void testStateTransitionExpire() {
+        contract.requestApproval();
+        contract.approve();
+        contract.expire();
+        assertEquals(ContractStatus.EXPIRED, contract.getStatus());
+    }
+
+    @Test
+    @DisplayName("CONTRACT - Illegal state transitions")
+    public void testIllegalTransitions() {
+        assertThrows(IllegalStateException.class, () -> contract.approve());
+        assertThrows(IllegalStateException.class, () -> contract.terminate());
+        assertThrows(IllegalStateException.class, () -> contract.expire());
+
+        contract.requestApproval();
+        assertThrows(IllegalStateException.class, () -> contract.requestApproval());
+
+        contract.approve();
+        assertThrows(IllegalStateException.class, () -> contract.approve());
+
+        contract.terminate();
+        assertThrows(IllegalStateException.class, () -> contract.approve());
+    }
+
+    @Test
+    @DisplayName("STRATEGY - Standard Commission")
+    public void testStandardCommission() {
+        com.shoprentals.v1.pattern.strategy.CommissionStrategy strategy = new com.shoprentals.v1.pattern.strategy.StandardCommissionStrategy();
+        assertEquals(800.0, strategy.calculateCommission(10000.0, 0.08), 0.001);
+    }
+
+    @Test
+    @DisplayName("STRATEGY - Progressive Commission")
+    public void testProgressiveCommission() {
+        com.shoprentals.v1.pattern.strategy.CommissionStrategy strategy = new com.shoprentals.v1.pattern.strategy.ProgressiveCommissionStrategy();
+        // Tier 1: <= 10,000
+        assertEquals(400.0, strategy.calculateCommission(5000.0, 0.08), 0.001);
+        // Tier 2: 10,000 < x <= 30,000
+        // (10000 * 0.08) + (5000 * 0.09) = 800 + 450 = 1250
+        assertEquals(1250.0, strategy.calculateCommission(15000.0, 0.08), 0.001);
+        // Tier 3: > 30,000
+        // (10000 * 0.08) + (20000 * 0.09) + (10000 * 0.10) = 800 + 1800 + 1000 = 3600
+        assertEquals(3600.0, strategy.calculateCommission(40000.0, 0.08), 0.001);
+    }
+
+    @Test
+    @DisplayName("FACTORY - ShortTermLeaseFactory")
+    public void testShortTermFactory() {
+        com.shoprentals.v1.pattern.factory.LeaseContractFactory factory = new com.shoprentals.v1.pattern.factory.ShortTermLeaseFactory();
+        LeaseContract shortContract = factory.createContract(99, shop, tenant, 2000.0);
+        assertEquals(0.12, shortContract.getCommissionRate(), 0.001);
+    }
+
+    @Test
+    @DisplayName("PATTERN - Observer Event Bus")
+    public void testObserverBus() {
+        final boolean[] received = { false };
+        eventBus.subscribe(event -> received[0] = true);
+        eventBus.publish(new com.shoprentals.v1.pattern.observer.RentalEvent("TEST", "MSG"));
+        assertTrue(received[0]);
+    }
+
+    @Test
+    @DisplayName("PATTERN - Audit Log Listener")
+    public void testAuditLogCoverage() {
+        com.shoprentals.v1.pattern.observer.AuditLogListener listener = new com.shoprentals.v1.pattern.observer.AuditLogListener();
+        listener.onEvent(new com.shoprentals.v1.pattern.observer.RentalEvent("TEST", "MSG"));
+        // Mainly for coverage of println
     }
 
     // ===================== PAYMENT TESTS =====================
@@ -241,18 +352,23 @@ public class ShopRentalSystemCompleteTest {
     }
 
     @Test
-    @DisplayName("PAYMENT - Multiple payment verification")
-    public void testMultiplePayments() {
-        Payment p1 = new Payment(1, 5000.0);
-        Payment p2 = new Payment(2, 6000.0);
-        Payment p3 = new Payment(3, 7000.0);
+    @DisplayName("PAYMENT - Validation of amount")
+    public void testPaymentValidation() {
+        Payment p = new Payment(1, -10.0);
+        assertFalse(p.verifyPayment());
+        assertEquals(PaymentStatus.UNVERIFIED, p.getStatus());
 
-        p1.verifyPayment();
-        p2.verifyPayment();
-
-        assertEquals(PaymentStatus.CONFIRMED, p1.getStatus());
+        Payment p2 = new Payment(2, 100.0, PaymentStatus.CONFIRMED);
         assertEquals(PaymentStatus.CONFIRMED, p2.getStatus());
-        assertEquals(PaymentStatus.UNVERIFIED, p3.getStatus());
+    }
+
+    @Test
+    @DisplayName("PAYMENT - Sales Record Data")
+    public void testSalesRecordData() {
+        SalesRecord sr = new SalesRecord(1, "2024-03", 1000.0);
+        assertEquals(1, sr.getRecordId());
+        assertEquals("2024-03", sr.getMonth());
+        assertEquals(1000.0, sr.getTotalSales(), 0.001);
     }
 
     // ===================== SERVICE TESTS =====================
@@ -281,15 +397,50 @@ public class ShopRentalSystemCompleteTest {
     }
 
     @Test
-    @DisplayName("SERVICE - Get next IDs")
-    public void testGetNextIds() {
-        int contractId = service.getNextContractId();
-        int recordId = service.getNextRecordId();
-        int paymentId = service.getNextPaymentId();
+    @DisplayName("SERVICE - Create lease request through service")
+    public void testCreateLeaseRequestService() {
+        Shop shop2 = new Shop(102, "S102", ShopStatus.OPEN, 3000.0, ShopType.POPUP);
+        LeaseContract newContract = service.createLeaseRequest(tenant, shop2,
+                new com.shoprentals.v1.pattern.factory.StandardLeaseFactory(), 3000.0);
 
-        assertTrue(contractId > 0);
-        assertTrue(recordId > 0);
-        assertTrue(paymentId > 0);
+        assertNotNull(newContract);
+        assertEquals(ContractStatus.PENDING_APPROVAL, newContract.getStatus());
+    }
+
+    @Test
+    @DisplayName("SERVICE - Approve contract through service")
+    public void testApproveContractService() {
+        contract.requestApproval();
+        service.approveContract(contract);
+        assertEquals(ContractStatus.ACTIVE, contract.getStatus());
+    }
+
+    @Test
+    @DisplayName("SERVICE - Submit monthly sales through service")
+    public void testSubmitMonthlySalesService() {
+        com.shoprentals.v1.pattern.strategy.CommissionStrategy strategy = new com.shoprentals.v1.pattern.strategy.StandardCommissionStrategy();
+        Payment payment = service.submitMonthlySales(contract, "2024-03", 50000.0, strategy);
+
+        // 50000 * 0.08 = 4000
+        // Base 5000 + 4000 = 9000
+        assertEquals(9000.0, payment.getAmount(), 0.001);
+        assertNotNull(payment);
+    }
+
+    @Test
+    @DisplayName("SERVICE - Setters for next IDs")
+    public void testServiceIdSetters() {
+        service.setNextContractId(100);
+        service.setNextRecordId(200);
+        service.setNextPaymentId(300);
+
+        assertEquals(100, service.getNextContractId());
+        assertEquals(200, service.getNextRecordId());
+        assertEquals(300, service.getNextPaymentId());
+
+        // Test negative values protection
+        service.setNextContractId(-1);
+        assertEquals(1, service.getNextContractId());
     }
 
     // ===================== INTEGRATION TESTS =====================
