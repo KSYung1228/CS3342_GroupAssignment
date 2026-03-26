@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.085" tests="30" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="17"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+    <property name="sun.jnu.encoding" value="MS950"/>
+    <property name="java.class.path" value="C:\Users\ykswo\Desktop\CS3342_GroupAssignment\Code\V1\target\test-classes;C:\Users\ykswo\Desktop\CS3342_GroupAssignment\Code\V1\target\classes;C:\Users\ykswo\.m2\repository\com\google\code\gson\gson\2.11.0\gson-2.11.0.jar;C:\Users\ykswo\.m2\repository\com\google\errorprone\error_prone_annotations\2.27.0\error_prone_annotations-2.27.0.jar;C:\Users\ykswo\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.3\junit-jupiter-api-5.9.3.jar;C:\Users\ykswo\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\ykswo\.m2\repository\org\junit\platform\junit-platform-commons\1.9.3\junit-platform-commons-1.9.3.jar;C:\Users\ykswo\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\ykswo\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.9.3\junit-jupiter-engine-5.9.3.jar;C:\Users\ykswo\.m2\repository\org\junit\platform\junit-platform-engine\1.9.3\junit-platform-engine-1.9.3.jar;"/>
+    <property name="java.vm.vendor" value="Eclipse Adoptium"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="user.variant" value=""/>
+    <property name="java.vendor.url" value="https://adoptium.net/"/>
+    <property name="user.timezone" value="Asia/Hong_Kong"/>
+    <property name="user.country.format" value="HK"/>
+    <property name="os.name" value="Windows 11"/>
+    <property name="java.vm.specification.version" value="17"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="US"/>
+    <property name="sun.boot.library.path" value="C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot\bin"/>
+    <property name="sun.java.command" value="C:\Users\ykswo\AppData\Local\Temp\surefire896590844672106024\surefirebooter-20260326163223895_3.jar C:\Users\ykswo\AppData\Local\Temp\surefire896590844672106024 2026-03-26T16-32-22_668-jvmRun1 surefire-20260326163223895_1tmp surefire_0-20260326163223895_2tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="C:\Users\ykswo\Desktop\CS3342_GroupAssignment\Code\V1\target\test-classes;C:\Users\ykswo\Desktop\CS3342_GroupAssignment\Code\V1\target\classes;C:\Users\ykswo\.m2\repository\com\google\code\gson\gson\2.11.0\gson-2.11.0.jar;C:\Users\ykswo\.m2\repository\com\google\errorprone\error_prone_annotations\2.27.0\error_prone_annotations-2.27.0.jar;C:\Users\ykswo\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.3\junit-jupiter-api-5.9.3.jar;C:\Users\ykswo\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\ykswo\.m2\repository\org\junit\platform\junit-platform-commons\1.9.3\junit-platform-commons-1.9.3.jar;C:\Users\ykswo\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\ykswo\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.9.3\junit-jupiter-engine-5.9.3.jar;C:\Users\ykswo\.m2\repository\org\junit\platform\junit-platform-engine\1.9.3\junit-platform-engine-1.9.3.jar;"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="C:\Users\ykswo"/>
+    <property name="user.language" value="en"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2025-10-21"/>
+    <property name="java.home" value="C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot"/>
+    <property name="file.separator" value="\"/>
+    <property name="basedir" value="C:\Users\ykswo\Desktop\CS3342_GroupAssignment\Code\V1"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="surefire.real.class.path" value="C:\Users\ykswo\AppData\Local\Temp\surefire896590844672106024\surefirebooter-20260326163223895_3.jar"/>
+    <property name="user.script" value=""/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="17.0.17+10"/>
+    <property name="user.name" value="ykswo"/>
+    <property name="path.separator" value=";"/>
+    <property name="os.version" value="10.0"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="file.encoding" value="MS950"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="java.vendor.version" value="Temurin-17.0.17+10"/>
+    <property name="localRepository" value="C:\Users\ykswo\.m2\repository"/>
+    <property name="java.vendor.url.bug" value="https://github.com/adoptium/adoptium-support/issues"/>
+    <property name="java.io.tmpdir" value="C:\Users\ykswo\AppData\Local\Temp\"/>
+    <property name="java.version" value="17.0.17"/>
+    <property name="user.dir" value="C:\Users\ykswo\Desktop\CS3342_GroupAssignment\Code\V1"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.language.format" value="zh"/>
+    <property name="sun.os.patch.level" value=""/>
+    <property name="native.encoding" value="MS950"/>
+    <property name="java.library.path" value="C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\Users\ykswo\AppData\Roaming\Code\User\globalStorage\github.copilot-chat\debugCommand;c:\Users\ykswo\AppData\Roaming\Code\User\globalStorage\github.copilot-chat\copilotCli;C:\Users\ykswo\AppData\Local\Programs\Microsoft VS Code;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Program Files\Eclipse Adoptium\jdk-25.0.1.8-hotspot\bin;C:\Program Files\Eclipse Adoptium\jdk-17.0.17.10-hotspot\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA App\NvDLISR;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Users\ykswo\AppData\Local\Microsoft\WindowsApps;C:\Users\ykswo\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\ykswo\AppData\Local\JetBrains\Toolbox\scripts;c:\Users\ykswo\.vscode\extensions\vscjava.vscode-java-debug-0.58.5\bundled\scripts\noConfigScripts;."/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="java.vendor" value="Eclipse Adoptium"/>
+    <property name="java.vm.version" value="17.0.17+10"/>
+    <property name="java.specification.maintenance.version" value="1"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="61.0"/>
+  </properties>
+  <testcase name="testGetNextIds" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.029"/>
+  <testcase name="testPaymentContractFlow" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.004"/>
+  <testcase name="testNoOpenShops" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.003"/>
+  <testcase name="testContractManagerLogin" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.001"/>
+  <testcase name="testEditShopInfo" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testGetCommissionRate" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testCreatePayment" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testTerminateContract" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.001"/>
+  <testcase name="testRequestApproval" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testFindOpenShops" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testMultipleContracts" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testChangePassword" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.002"/>
+  <testcase name="testUserAuthenticationFlow" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.005"/>
+  <testcase name="testCreateSalesRecord" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.002"/>
+  <testcase name="testCalculateTotalRent" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testTenantLoginSuccess" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.002"/>
+  <testcase name="testApproveContract" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testSystemAdminLogin" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.001"/>
+  <testcase name="testCreateShop" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testCompleteContractFlow" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testAccountingLogin" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testCreateLeaseContract" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.002"/>
+  <testcase name="testUpdateShopStatus" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testGetUserInfo" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testMultipleShops" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testVerifyPayment" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testShopUnderRepair" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testTenantLoginFailure" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testShopTenantRelationship" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0"/>
+  <testcase name="testMultiplePayments" classname="com.shoprentals.v1.ShopRentalSystemCompleteTest" time="0.002"/>
+</testsuite>
