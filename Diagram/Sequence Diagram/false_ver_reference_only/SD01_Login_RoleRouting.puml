@@ -1,0 +1,28 @@
+@startuml SD01_Login_RoleRouting
+hide footbox
+title SD01 Login and Role Routing
+
+actor User
+participant App as ShopRentalApplication
+participant Auth as UserEntity
+
+User -> App: input username/password
+App -> App: authenticate(username, password)
+App -> Auth: login(password)
+Auth --> App: true/false
+
+alt login success
+	App -> App: read roleByUsername
+	alt role=tenant
+		App --> User: open Tenant Menu
+	else role=contractmanager
+		App --> User: open ContractManager Menu
+	else role=accounting
+		App --> User: open Accounting Menu
+	else role=systemadmin
+		App --> User: open SystemAdmin Menu
+	end
+else login failed
+	App --> User: Login failed
+end
+@enduml

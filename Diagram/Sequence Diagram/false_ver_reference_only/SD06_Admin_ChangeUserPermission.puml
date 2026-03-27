@@ -1,0 +1,15 @@
+@startuml SD06_Admin_ChangeUserPermission
+hide footbox
+title SD06 Admin Changes User Permission
+
+actor AdminUser as SystemAdminUser
+participant App as ShopRentalApplication
+participant Admin as SystemAdmin
+
+AdminUser -> App: choose Change user permission
+App -> App: input targetUserId + permission text
+App -> Admin: changeUserPermission(userId, permission)
+Admin --> App: updated
+App -> App: saveStateQuietly()
+App --> AdminUser: Permission updated and saved
+@enduml

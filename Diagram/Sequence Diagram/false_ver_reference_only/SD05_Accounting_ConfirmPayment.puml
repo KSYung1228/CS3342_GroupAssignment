@@ -1,0 +1,18 @@
+@startuml SD05_Accounting_ConfirmPayment
+hide footbox
+title SD05 Accounting Confirms Payment
+
+actor AcctUser as AccountingUser
+participant App as ShopRentalApplication
+participant Accounting
+participant Payment
+
+AcctUser -> App: choose Confirm active payment
+App -> App: getActivePayment()
+App -> Accounting: confirmPaymentTransfer(payment)
+Accounting -> Payment: verifyPayment()
+Payment --> Accounting: true/false (status updated if true)
+Accounting --> App: confirmed
+App -> App: saveStateQuietly()
+App --> AcctUser: Payment confirmed result
+@enduml

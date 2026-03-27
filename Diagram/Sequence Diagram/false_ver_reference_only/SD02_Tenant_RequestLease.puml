@@ -1,0 +1,27 @@
+@startuml SD02_Tenant_RequestLease
+hide footbox
+title SD02 Tenant Request Lease
+
+actor TenantUser as TenantActor
+participant App as ShopRentalApplication
+participant Tenant
+participant Service as ShopRentalService
+participant Factory as StandardLeaseFactory
+participant Contract as LeaseContract
+participant Bus as RentalEventBus
+participant Audit as AuditLogListener
+
+TenantActor -> App: choose Request lease contract
+App -> App: chooseShop + validate OPEN
+App -> Tenant: requestRentStore(shop, service, factory, baseRent)
+Tenant -> Service: createLeaseRequest(this, shop, factory, baseRent)
+Service -> Factory: createContract(nextContractId, shop, tenant, baseRent)
+Factory --> Service: LeaseContract
+Service -> Contract: requestApproval()
+Service -> Bus: publish(LEASE_REQUESTED)
+Bus -> Audit: onEvent(...)
+Service --> Tenant: contract
+Tenant --> App: contract
+App -> App: contracts.add(contract)\nactiveContractId=contractId\nsaveStateQuietly()
+App --> TenantActor: Contract request created
+@enduml

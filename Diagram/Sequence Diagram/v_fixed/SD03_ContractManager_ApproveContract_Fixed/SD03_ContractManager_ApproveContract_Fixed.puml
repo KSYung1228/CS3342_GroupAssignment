@@ -1,0 +1,60 @@
+@startuml SD03_ContractManager_ApproveContract_Fixed
+hide footbox
+title SD03 Contract Manager Approves Contract
+
+actor "ContractManagerUser" as CM
+participant "App : ShopRentalApplication" as App <<Boundary>>
+participant "Manager : ContractManager" as Manager
+participant "Service : ShopRentalService" as Service <<Controller>>
+participant "Contract : LeaseContract" as Contract <<Entity>>
+participant "Tenant : Tenant" as Tenant
+participant "Bus : RentalEventBus" as Bus
+participant "Audit : AuditLogListener" as Audit
+
+CM -> App: 1. Approve active contract
+activate App
+
+App -> App: 2. getActiveContract()
+App -> Manager: 3. permitRequest(contract)
+activate Manager
+Manager --> App: true
+deactivate Manager
+
+alt contract is PENDING_APPROVAL
+  App -> Manager: 4. createContract(contract, service)
+  activate Manager
+  
+  Manager -> Service: 5. approveContract(contract)
+  activate Service
+  
+  Service -> Contract: 6. approve()
+  activate Contract
+  Contract --> Service: status=ACTIVE
+  deactivate Contract
+  
+  Service -> Bus: 7. publish(CONTRACT_APPROVED)
+  activate Bus
+  Bus -> Audit: 8. onEvent()
+  activate Audit
+  Audit --> Bus: done
+  deactivate Audit
+  Bus --> Service: logged
+  deactivate Bus
+  
+  Service --> Manager: done
+  deactivate Service
+  Manager --> App: done
+  deactivate Manager
+  
+  App -> Tenant: 9. signContract(contract)
+  activate Tenant
+  Tenant --> App: signed
+  deactivate Tenant
+  
+  App -> App: 10. saveStateQuietly()
+  App --> CM: 11. "Contract approved and signed"
+else not pending
+  App --> CM: 11. "Not waiting for approval"
+end
+deactivate App
+@enduml

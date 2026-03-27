@@ -1,0 +1,56 @@
+@startuml SD02_Tenant_RequestLease_Fixed
+hide footbox
+title SD02 Tenant Request Lease
+
+actor "TenantUser" as TenantActor
+participant "App : ShopRentalApplication" as App <<Boundary>>
+participant "Tenant : Tenant" as Tenant
+participant "Service : ShopRentalService" as Service <<Controller>>
+participant "Factory : LeaseContractFactory" as Factory
+participant "Contract : LeaseContract" as Contract <<Entity>>
+participant "Bus : RentalEventBus" as Bus
+participant "Audit : AuditLogListener" as Audit
+
+TenantActor -> App: 1. Request lease contract
+activate App
+
+App -> App: 2. validate shop == OPEN
+App -> Tenant: 3. requestRentStore(shop, baseRent)
+activate Tenant
+
+Tenant -> Service: 4. createLeaseRequest(tenant, shop, factory, baseRent)
+activate Service
+
+Service -> Factory: 5. createContract(shop, tenant, baseRent)
+activate Factory
+Factory -> Contract: 6. <<create>>
+activate Contract
+Contract --> Factory: Contract
+deactivate Contract
+Factory --> Service: Contract
+deactivate Factory
+
+Service -> Contract: 7. requestApproval()
+activate Contract
+Contract --> Service: status=PENDING_APPROVAL
+deactivate Contract
+
+Service -> Bus: 8. publish(LEASE_REQUESTED)
+activate Bus
+Bus -> Audit: 9. onEvent()
+activate Audit
+Audit --> Bus: done
+deactivate Audit
+Bus --> Service: logged
+deactivate Bus
+
+Service --> Tenant: Contract
+deactivate Service
+
+Tenant --> App: Contract
+deactivate Tenant
+
+App -> App: 10. saveStateQuietly()
+App --> TenantActor: 11. "Contract request created"
+deactivate App
+@enduml

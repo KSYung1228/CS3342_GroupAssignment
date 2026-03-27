@@ -1,0 +1,31 @@
+@startuml SD03_ContractManager_ApproveContract
+hide footbox
+title SD03 Contract Manager Approves Contract
+
+actor CM as ContractManagerUser
+participant App as ShopRentalApplication
+participant Manager as ContractManager
+participant Service as ShopRentalService
+participant Contract as LeaseContract
+participant Tenant
+participant Bus as RentalEventBus
+participant Audit as AuditLogListener
+
+CM -> App: choose Approve active contract
+App -> App: getActiveContract()
+App -> Manager: permitRequest(contract)
+Manager --> App: true/false
+
+alt permit=true
+	App -> Manager: createContract(contract, service)
+	Manager -> Service: approveContract(contract)
+	Service -> Contract: approve()
+	Service -> Bus: publish(CONTRACT_APPROVED)
+	Bus -> Audit: onEvent(...)
+	App -> Tenant: signContract(contract)
+	App -> App: saveStateQuietly()
+	App --> CM: Contract approved and signed
+else permit=false
+	App --> CM: Contract is not waiting for approval
+end
+@enduml

@@ -1,0 +1,33 @@
+@startuml SD04_Tenant_UploadMonthlySales
+hide footbox
+title SD04 Tenant Upload Monthly Sales
+
+actor TenantUser as TenantActor
+participant App as ShopRentalApplication
+participant Tenant
+participant Service as ShopRentalService
+participant Record as SalesRecord
+participant Strategy as ProgressiveCommissionStrategy
+participant Contract as LeaseContract
+participant Payment
+participant Bus as RentalEventBus
+participant Audit as AuditLogListener
+
+TenantActor -> App: choose Upload monthly sales record
+App -> App: validate active contract + owner + ACTIVE status
+App -> Tenant: uploadMonthlyRecord(contract, month, sales, strategy, service)
+Tenant -> Service: submitMonthlySales(contract, month, sales, strategy)
+Service -> Record: new(recordId, month, sales)
+Service -> Record: calculateCommission(strategy, contract.commissionRate)
+Record -> Strategy: calculateCommission(totalSales, baseRate)
+Strategy --> Record: commissionAmount
+Service -> Contract: calculateTotalRent(commissionAmount)
+Contract --> Service: totalRent
+Service -> Bus: publish(MONTHLY_RECORD_UPLOADED)
+Bus -> Audit: onEvent(...)
+Service -> Payment: new(paymentId, totalRent)
+Service --> Tenant: payment
+Tenant --> App: payment
+App -> App: payments.add(payment)\nactivePaymentId=paymentId\nsaveStateQuietly()
+App --> TenantActor: Monthly record uploaded
+@enduml

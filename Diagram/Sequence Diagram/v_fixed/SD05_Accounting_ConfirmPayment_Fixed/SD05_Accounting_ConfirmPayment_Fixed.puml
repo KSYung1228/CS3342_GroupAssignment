@@ -1,0 +1,28 @@
+@startuml SD05_Accounting_ConfirmPayment_Fixed
+hide footbox
+title SD05 Accounting Confirms Payment
+
+actor "AccountingUser" as AcctUser
+participant "App : ShopRentalApplication" as App <<Boundary>>
+participant "Accounting : Accounting" as Accounting
+participant "Payment : Payment" as Payment <<Entity>>
+
+AcctUser -> App: 1. Confirm active payment
+activate App
+
+App -> App: 2. getActivePayment()
+App -> Accounting: 3. confirmPaymentTransfer(payment)
+activate Accounting
+
+Accounting -> Payment: 4. verifyPayment()
+activate Payment
+Payment --> Accounting: status=CONFIRMED
+deactivate Payment
+
+Accounting --> App: confirmed=true
+deactivate Accounting
+
+App -> App: 5. saveStateQuietly()
+App --> AcctUser: 6. "Payment confirmed"
+deactivate App
+@enduml

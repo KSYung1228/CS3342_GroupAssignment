@@ -1,0 +1,68 @@
+@startuml SD04_Tenant_UploadMonthlySales_Fixed
+hide footbox
+title SD04 Tenant Upload Monthly Sales
+
+actor "TenantUser" as TenantActor
+participant "App : ShopRentalApplication" as App <<Boundary>>
+participant "Tenant : Tenant" as Tenant
+participant "Service : ShopRentalService" as Service <<Controller>>
+participant "Record : SalesRecord" as Record <<Entity>>
+participant "Strategy : CommissionStrategy" as Strategy
+participant "Contract : LeaseContract" as Contract <<Entity>>
+participant "Payment : Payment" as Payment <<Entity>>
+participant "Bus : RentalEventBus" as Bus
+participant "Audit : AuditLogListener" as Audit
+
+TenantActor -> App: 1. Upload monthly sales (month, sales)
+activate App
+
+App -> App: 2. validate active contract ACTIVE
+App -> Tenant: 3. uploadMonthlyRecord(contract, sales)
+activate Tenant
+
+Tenant -> Service: 4. submitMonthlySales(contract, sales)
+activate Service
+
+Service -> Record: 5. <<create>>(month, sales)
+activate Record
+Record --> Service: Record
+deactivate Record
+
+Service -> Record: 6. calculateCommission(strategy)
+activate Record
+Record -> Strategy: 7. calculateCommission(sales)
+activate Strategy
+Strategy --> Record: commissionAmount
+deactivate Strategy
+Record --> Service: commissionAmount
+deactivate Record
+
+Service -> Contract: 8. calculateTotalRent(commissionAmount)
+activate Contract
+Contract --> Service: totalRent
+deactivate Contract
+
+Service -> Bus: 9. publish(MONTHLY_RECORD_UPLOADED)
+activate Bus
+Bus -> Audit: 10. onEvent()
+activate Audit
+Audit --> Bus: done
+deactivate Audit
+Bus --> Service: logged
+deactivate Bus
+
+Service -> Payment: 11. <<create>>(totalRent)
+activate Payment
+Payment --> Service: Payment
+deactivate Payment
+
+Service --> Tenant: Payment
+deactivate Service
+
+Tenant --> App: Payment
+deactivate Tenant
+
+App -> App: 12. add payment & saveStateQuietly()
+App --> TenantActor: 13. "Monthly record uploaded"
+deactivate App
+@enduml
