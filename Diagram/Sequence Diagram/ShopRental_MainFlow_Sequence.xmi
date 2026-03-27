@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><uml:Model xmlns:uml="http://www.omg.org/spec/UML/20110701" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmi:id="b6b1f4e3_683dbc2c" xmi:version="2.1">
+    <packagedElement xmi:id="d15475f2_683dbc2c" xmi:type="uml:Interaction">
+        <nestedClassifier xmi:id="4bd32a25_683dbc2c" xmi:type="uml:Collaboration"/>
+        <lifeline name="TenantUser" xmi:id="393d80f0_3c0a50da"/>
+        <lifeline name="ShopRentalApplication" xmi:id="393d80f0_646be2c3"/>
+        <lifeline name="Tenant" xmi:id="393d80f0_797badd3"/>
+        <lifeline name="ShopRentalService" xmi:id="393d80f0_77be656f"/>
+        <lifeline name="LeaseContractFactory&#10;(StandardLeaseFactory)" xmi:id="393d80f0_19dc67c2"/>
+        <lifeline name="LeaseContract" xmi:id="393d80f0_221af3c0"/>
+        <lifeline name="ContractManager" xmi:id="393d80f0_62bd765"/>
+        <lifeline name="RentalEventBus" xmi:id="393d80f0_23a5fd2"/>
+        <lifeline name="AuditLogListener" xmi:id="393d80f0_78a2da20"/>
+        <lifeline name="SalesRecord" xmi:id="393d80f0_dd3b207"/>
+        <lifeline name="CommissionStrategy&#10;(ProgressiveCommissionStrategy)" xmi:id="393d80f0_551bdc27"/>
+        <lifeline name="Payment" xmi:id="393d80f0_58fdd99"/>
+        <lifeline name="Accounting" xmi:id="393d80f0_6b1274d2"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_534df152" xmi:id="2a27f2_534df152" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_23a5fd2" message="9c2397e7_534df152" xmi:id="d0946577_534df152" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="subscribe(AuditLogListener)" receiveEvent="d0946577_534df152" sendEvent="2a27f2_534df152" xmi:id="9c2397e7_534df152" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_23a5fd2" message="9c2397e7_52e677af" xmi:id="2a27f2_52e677af" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_78a2da20" message="9c2397e7_52e677af" xmi:id="d0946577_52e677af" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="register listener" receiveEvent="d0946577_52e677af" sendEvent="2a27f2_52e677af" xmi:id="9c2397e7_52e677af" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_35083305" xmi:id="2a27f2_35083305" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_35083305" xmi:id="d0946577_35083305" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="new ShopRentalService(eventBus)" receiveEvent="d0946577_35083305" sendEvent="2a27f2_35083305" xmi:id="9c2397e7_35083305" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_3c0a50da" message="9c2397e7_341b80b2" xmi:id="2a27f2_341b80b2" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_341b80b2" xmi:id="d0946577_341b80b2" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="Choose &quot;Request lease contract&quot;" receiveEvent="d0946577_341b80b2" sendEvent="2a27f2_341b80b2" xmi:id="9c2397e7_341b80b2" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_55a1c291" xmi:id="2a27f2_55a1c291" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_797badd3" message="9c2397e7_55a1c291" xmi:id="d0946577_55a1c291" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="requestRentStore(shop, service, factory, baseRent)" receiveEvent="d0946577_55a1c291" sendEvent="2a27f2_55a1c291" xmi:id="9c2397e7_55a1c291" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_797badd3" message="9c2397e7_2145433b" xmi:id="2a27f2_2145433b" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_2145433b" xmi:id="d0946577_2145433b" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="createLeaseRequest(this, shop, factory, baseRent)" receiveEvent="d0946577_2145433b" sendEvent="2a27f2_2145433b" xmi:id="9c2397e7_2145433b" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_2890c451" xmi:id="2a27f2_2890c451" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_19dc67c2" message="9c2397e7_2890c451" xmi:id="d0946577_2890c451" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="createContract(nextContractId, shop, tenant, baseRent)" receiveEvent="d0946577_2890c451" sendEvent="2a27f2_2890c451" xmi:id="9c2397e7_2890c451" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_19dc67c2" message="9c2397e7_40e6dfe1" xmi:id="2a27f2_40e6dfe1" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_40e6dfe1" xmi:id="d0946577_40e6dfe1" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="LeaseContract" receiveEvent="d0946577_40e6dfe1" sendEvent="2a27f2_40e6dfe1" xmi:id="9c2397e7_40e6dfe1" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_1b083826" xmi:id="2a27f2_1b083826" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_221af3c0" message="9c2397e7_1b083826" xmi:id="d0946577_1b083826" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="requestApproval()" receiveEvent="d0946577_1b083826" sendEvent="2a27f2_1b083826" xmi:id="9c2397e7_1b083826" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_105fece7" xmi:id="2a27f2_105fece7" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_23a5fd2" message="9c2397e7_105fece7" xmi:id="d0946577_105fece7" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="publish(LEASE_REQUESTED)" receiveEvent="d0946577_105fece7" sendEvent="2a27f2_105fece7" xmi:id="9c2397e7_105fece7" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_23a5fd2" message="9c2397e7_3ec300f1" xmi:id="2a27f2_3ec300f1" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_78a2da20" message="9c2397e7_3ec300f1" xmi:id="d0946577_3ec300f1" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="onEvent(LEASE_REQUESTED)" receiveEvent="d0946577_3ec300f1" sendEvent="2a27f2_3ec300f1" xmi:id="9c2397e7_3ec300f1" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_482cd91f" xmi:id="2a27f2_482cd91f" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_797badd3" message="9c2397e7_482cd91f" xmi:id="d0946577_482cd91f" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="contract" receiveEvent="d0946577_482cd91f" sendEvent="2a27f2_482cd91f" xmi:id="9c2397e7_482cd91f" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_797badd3" message="9c2397e7_123f1134" xmi:id="2a27f2_123f1134" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_123f1134" xmi:id="d0946577_123f1134" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="contract" receiveEvent="d0946577_123f1134" sendEvent="2a27f2_123f1134" xmi:id="9c2397e7_123f1134" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_7d68ef40" xmi:id="2a27f2_7d68ef40" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_7d68ef40" xmi:id="d0946577_7d68ef40" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="contracts.add(contract)&#10;activeContractId = contractId" receiveEvent="d0946577_7d68ef40" sendEvent="2a27f2_7d68ef40" xmi:id="9c2397e7_7d68ef40" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_3c0a50da" message="9c2397e7_75c072cb" xmi:id="2a27f2_75c072cb" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_75c072cb" xmi:id="d0946577_75c072cb" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="ContractManager selects &quot;Approve active contract&quot;" receiveEvent="d0946577_75c072cb" sendEvent="2a27f2_75c072cb" xmi:id="9c2397e7_75c072cb" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_1f1c7bf6" xmi:id="2a27f2_1f1c7bf6" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_62bd765" message="9c2397e7_1f1c7bf6" xmi:id="d0946577_1f1c7bf6" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="permitRequest(contract)" receiveEvent="d0946577_1f1c7bf6" sendEvent="2a27f2_1f1c7bf6" xmi:id="9c2397e7_1f1c7bf6" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_62bd765" message="9c2397e7_25b485ba" xmi:id="2a27f2_25b485ba" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_25b485ba" xmi:id="d0946577_25b485ba" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="true" receiveEvent="d0946577_25b485ba" sendEvent="2a27f2_25b485ba" xmi:id="9c2397e7_25b485ba" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_2b546384" xmi:id="2a27f2_2b546384" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_62bd765" message="9c2397e7_2b546384" xmi:id="d0946577_2b546384" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="createContract(contract, service)" receiveEvent="d0946577_2b546384" sendEvent="2a27f2_2b546384" xmi:id="9c2397e7_2b546384" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_62bd765" message="9c2397e7_5d740a0f" xmi:id="2a27f2_5d740a0f" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_5d740a0f" xmi:id="d0946577_5d740a0f" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="approveContract(contract)" receiveEvent="d0946577_5d740a0f" sendEvent="2a27f2_5d740a0f" xmi:id="9c2397e7_5d740a0f" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_214b199c" xmi:id="2a27f2_214b199c" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_221af3c0" message="9c2397e7_214b199c" xmi:id="d0946577_214b199c" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="approve()" receiveEvent="d0946577_214b199c" sendEvent="2a27f2_214b199c" xmi:id="9c2397e7_214b199c" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_20d3d15a" xmi:id="2a27f2_20d3d15a" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_23a5fd2" message="9c2397e7_20d3d15a" xmi:id="d0946577_20d3d15a" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="publish(CONTRACT_APPROVED)" receiveEvent="d0946577_20d3d15a" sendEvent="2a27f2_20d3d15a" xmi:id="9c2397e7_20d3d15a" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_23a5fd2" message="9c2397e7_2893de87" xmi:id="2a27f2_2893de87" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_78a2da20" message="9c2397e7_2893de87" xmi:id="d0946577_2893de87" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="onEvent(CONTRACT_APPROVED)" receiveEvent="d0946577_2893de87" sendEvent="2a27f2_2893de87" xmi:id="9c2397e7_2893de87" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_55ca8de8" xmi:id="2a27f2_55ca8de8" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_62bd765" message="9c2397e7_55ca8de8" xmi:id="d0946577_55ca8de8" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="done" receiveEvent="d0946577_55ca8de8" sendEvent="2a27f2_55ca8de8" xmi:id="9c2397e7_55ca8de8" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_2c34f934" xmi:id="2a27f2_2c34f934" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_797badd3" message="9c2397e7_2c34f934" xmi:id="d0946577_2c34f934" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="signContract(contract)" receiveEvent="d0946577_2c34f934" sendEvent="2a27f2_2c34f934" xmi:id="9c2397e7_2c34f934" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_12d3a4e9" xmi:id="2a27f2_12d3a4e9" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_12d3a4e9" xmi:id="d0946577_12d3a4e9" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="saveStateQuietly()" receiveEvent="d0946577_12d3a4e9" sendEvent="2a27f2_12d3a4e9" xmi:id="9c2397e7_12d3a4e9" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_3c0a50da" message="9c2397e7_25a65b77" xmi:id="2a27f2_25a65b77" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_25a65b77" xmi:id="d0946577_25a65b77" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="Choose &quot;Upload monthly sales record&quot;" receiveEvent="d0946577_25a65b77" sendEvent="2a27f2_25a65b77" xmi:id="9c2397e7_25a65b77" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_2ed0fbae" xmi:id="2a27f2_2ed0fbae" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_797badd3" message="9c2397e7_2ed0fbae" xmi:id="d0946577_2ed0fbae" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="uploadMonthlyRecord(contract, month, sales, strategy, service)" receiveEvent="d0946577_2ed0fbae" sendEvent="2a27f2_2ed0fbae" xmi:id="9c2397e7_2ed0fbae" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_797badd3" message="9c2397e7_212bf671" xmi:id="2a27f2_212bf671" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_212bf671" xmi:id="d0946577_212bf671" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="submitMonthlySales(contract, month, sales, strategy)" receiveEvent="d0946577_212bf671" sendEvent="2a27f2_212bf671" xmi:id="9c2397e7_212bf671" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_14a2f921" xmi:id="2a27f2_14a2f921" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_dd3b207" message="9c2397e7_14a2f921" xmi:id="d0946577_14a2f921" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="new SalesRecord(recordId, month, sales)" receiveEvent="d0946577_14a2f921" sendEvent="2a27f2_14a2f921" xmi:id="9c2397e7_14a2f921" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_3c87521" xmi:id="2a27f2_3c87521" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_dd3b207" message="9c2397e7_3c87521" xmi:id="d0946577_3c87521" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="calculateCommission(strategy, contract.commissionRate)" receiveEvent="d0946577_3c87521" sendEvent="2a27f2_3c87521" xmi:id="9c2397e7_3c87521" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_dd3b207" message="9c2397e7_2aece37d" xmi:id="2a27f2_2aece37d" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_551bdc27" message="9c2397e7_2aece37d" xmi:id="d0946577_2aece37d" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="calculateCommission(totalSales, baseRate)" receiveEvent="d0946577_2aece37d" sendEvent="2a27f2_2aece37d" xmi:id="9c2397e7_2aece37d" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_551bdc27" message="9c2397e7_548a102f" xmi:id="2a27f2_548a102f" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_dd3b207" message="9c2397e7_548a102f" xmi:id="d0946577_548a102f" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="commissionAmount" receiveEvent="d0946577_548a102f" sendEvent="2a27f2_548a102f" xmi:id="9c2397e7_548a102f" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_5762806e" xmi:id="2a27f2_5762806e" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_221af3c0" message="9c2397e7_5762806e" xmi:id="d0946577_5762806e" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="calculateTotalRent(commissionAmount)" receiveEvent="d0946577_5762806e" sendEvent="2a27f2_5762806e" xmi:id="9c2397e7_5762806e" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_221af3c0" message="9c2397e7_17c386de" xmi:id="2a27f2_17c386de" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_17c386de" xmi:id="d0946577_17c386de" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="totalRent" receiveEvent="d0946577_17c386de" sendEvent="2a27f2_17c386de" xmi:id="9c2397e7_17c386de" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_5af97850" xmi:id="2a27f2_5af97850" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_23a5fd2" message="9c2397e7_5af97850" xmi:id="d0946577_5af97850" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="publish(MONTHLY_RECORD_UPLOADED)" receiveEvent="d0946577_5af97850" sendEvent="2a27f2_5af97850" xmi:id="9c2397e7_5af97850" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_23a5fd2" message="9c2397e7_5ef60048" xmi:id="2a27f2_5ef60048" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_78a2da20" message="9c2397e7_5ef60048" xmi:id="d0946577_5ef60048" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="onEvent(MONTHLY_RECORD_UPLOADED)" receiveEvent="d0946577_5ef60048" sendEvent="2a27f2_5ef60048" xmi:id="9c2397e7_5ef60048" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_1d548a08" xmi:id="2a27f2_1d548a08" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_58fdd99" message="9c2397e7_1d548a08" xmi:id="d0946577_1d548a08" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="new Payment(paymentId, totalRent)" receiveEvent="d0946577_1d548a08" sendEvent="2a27f2_1d548a08" xmi:id="9c2397e7_1d548a08" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_77be656f" message="9c2397e7_16aa0a0a" xmi:id="2a27f2_16aa0a0a" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_797badd3" message="9c2397e7_16aa0a0a" xmi:id="d0946577_16aa0a0a" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="payment" receiveEvent="d0946577_16aa0a0a" sendEvent="2a27f2_16aa0a0a" xmi:id="9c2397e7_16aa0a0a" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_797badd3" message="9c2397e7_780cb77" xmi:id="2a27f2_780cb77" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_780cb77" xmi:id="d0946577_780cb77" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="payment" receiveEvent="d0946577_780cb77" sendEvent="2a27f2_780cb77" xmi:id="9c2397e7_780cb77" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_691a7f8f" xmi:id="2a27f2_691a7f8f" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_691a7f8f" xmi:id="d0946577_691a7f8f" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="payments.add(payment)&#10;activePaymentId = paymentId" receiveEvent="d0946577_691a7f8f" sendEvent="2a27f2_691a7f8f" xmi:id="9c2397e7_691a7f8f" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_3c0a50da" message="9c2397e7_161b062a" xmi:id="2a27f2_161b062a" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_161b062a" xmi:id="d0946577_161b062a" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="Accounting selects &quot;Confirm active payment&quot;" receiveEvent="d0946577_161b062a" sendEvent="2a27f2_161b062a" xmi:id="9c2397e7_161b062a" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_17c1bced" xmi:id="2a27f2_17c1bced" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_6b1274d2" message="9c2397e7_17c1bced" xmi:id="d0946577_17c1bced" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="confirmPaymentTransfer(payment)" receiveEvent="d0946577_17c1bced" sendEvent="2a27f2_17c1bced" xmi:id="9c2397e7_17c1bced" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_6b1274d2" message="9c2397e7_2d9d4f9d" xmi:id="2a27f2_2d9d4f9d" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_58fdd99" message="9c2397e7_2d9d4f9d" xmi:id="d0946577_2d9d4f9d" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="verifyPayment()" receiveEvent="d0946577_2d9d4f9d" sendEvent="2a27f2_2d9d4f9d" xmi:id="9c2397e7_2d9d4f9d" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_58fdd99" message="9c2397e7_4034c28c" xmi:id="2a27f2_4034c28c" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_6b1274d2" message="9c2397e7_4034c28c" xmi:id="d0946577_4034c28c" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="true (status=CONFIRMED)" receiveEvent="d0946577_4034c28c" sendEvent="2a27f2_4034c28c" xmi:id="9c2397e7_4034c28c" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_6b1274d2" message="9c2397e7_e50a6f6" xmi:id="2a27f2_e50a6f6" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_e50a6f6" xmi:id="d0946577_e50a6f6" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="confirmed=true" receiveEvent="d0946577_e50a6f6" sendEvent="2a27f2_e50a6f6" xmi:id="9c2397e7_e50a6f6" xmi:type="uml:Message"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_14ec4505" xmi:id="2a27f2_14ec4505" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <fragment covered="393d80f0_646be2c3" message="9c2397e7_14ec4505" xmi:id="d0946577_14ec4505" xmi:type="uml:MessageOccurrenceSpecification"/>
+        <message name="saveStateQuietly()" receiveEvent="d0946577_14ec4505" sendEvent="2a27f2_14ec4505" xmi:id="9c2397e7_14ec4505" xmi:type="uml:Message"/>
+    </packagedElement>
+</uml:Model>

@@ -1,0 +1,79 @@
+@startuml
+hide footbox
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 30
+skinparam BoxPadding 10
+
+title Shop Rental System V1 - Main Runtime Sequence
+
+actor TenantUser as TU
+participant "ShopRentalApplication" as App
+participant "Tenant" as Tenant
+participant "ShopRentalService" as Service
+participant "LeaseContractFactory\n(StandardLeaseFactory)" as Factory
+participant "LeaseContract" as Contract
+participant "ContractManager" as Manager
+participant "RentalEventBus" as EventBus
+participant "AuditLogListener" as Audit
+participant "SalesRecord" as Record
+participant "CommissionStrategy\n(ProgressiveCommissionStrategy)" as Strategy
+participant "Payment" as Payment
+participant "Accounting" as Accounting
+
+== Bootstrapping ==
+App -> EventBus: subscribe(AuditLogListener)
+EventBus -> Audit: register listener
+App -> Service: new ShopRentalService(eventBus)
+
+== Tenant requests lease ==
+TU -> App: Choose "Request lease contract"
+App -> Tenant: requestRentStore(shop, service, factory, baseRent)
+Tenant -> Service: createLeaseRequest(this, shop, factory, baseRent)
+Service -> Factory: createContract(nextContractId, shop, tenant, baseRent)
+Factory --> Service: LeaseContract
+Service -> Contract: requestApproval()
+Service -> EventBus: publish(LEASE_REQUESTED)
+EventBus -> Audit: onEvent(LEASE_REQUESTED)
+Service --> Tenant: contract
+Tenant --> App: contract
+App -> App: contracts.add(contract)\nactiveContractId = contractId
+
+== Contract manager approves ==
+TU -> App: ContractManager selects "Approve active contract"
+App -> Manager: permitRequest(contract)
+Manager --> App: true
+App -> Manager: createContract(contract, service)
+Manager -> Service: approveContract(contract)
+Service -> Contract: approve()
+Service -> EventBus: publish(CONTRACT_APPROVED)
+EventBus -> Audit: onEvent(CONTRACT_APPROVED)
+Service --> Manager: done
+App -> Tenant: signContract(contract)
+App -> App: saveStateQuietly()
+
+== Tenant uploads monthly sales ==
+TU -> App: Choose "Upload monthly sales record"
+App -> Tenant: uploadMonthlyRecord(contract, month, sales, strategy, service)
+Tenant -> Service: submitMonthlySales(contract, month, sales, strategy)
+Service -> Record: new SalesRecord(recordId, month, sales)
+Service -> Record: calculateCommission(strategy, contract.commissionRate)
+Record -> Strategy: calculateCommission(totalSales, baseRate)
+Strategy --> Record: commissionAmount
+Service -> Contract: calculateTotalRent(commissionAmount)
+Contract --> Service: totalRent
+Service -> EventBus: publish(MONTHLY_RECORD_UPLOADED)
+EventBus -> Audit: onEvent(MONTHLY_RECORD_UPLOADED)
+Service -> Payment: new Payment(paymentId, totalRent)
+Service --> Tenant: payment
+Tenant --> App: payment
+App -> App: payments.add(payment)\nactivePaymentId = paymentId
+
+== Accounting confirms payment ==
+TU -> App: Accounting selects "Confirm active payment"
+App -> Accounting: confirmPaymentTransfer(payment)
+Accounting -> Payment: verifyPayment()
+Payment --> Accounting: true (status=CONFIRMED)
+Accounting --> App: confirmed=true
+App -> App: saveStateQuietly()
+
+@enduml
