@@ -1,0 +1,65 @@
+﻿Case: Admin changes and views permission
+Generated: 2026-03-31 23:47:19
+
+[User Input]
+admin
+admin123
+5
+U300
+CONTRACT_APPROVAL_ONLY
+6
+U300
+0
+exit
+
+[Program Output]
+State loaded from data\app-state.properties.
+
+===== Shop Rental System V1 =====
+Type register to create tenant account.
+Username (register/exit): Password: Login successful: admin (systemadmin)
+
+--- SystemAdmin Menu ---
+1. Create user
+2. Update user password
+3. Delete user
+4. List users
+5. Change user permission
+6. View user permission
+7. Create shop
+8. Edit shop info
+9. Delete shop
+10. View all state
+0. Logout
+Choose an option: Enter target userId: Enter permission text: Permission updated and saved.
+
+--- SystemAdmin Menu ---
+1. Create user
+2. Update user password
+3. Delete user
+4. List users
+5. Change user permission
+6. View user permission
+7. Create shop
+8. Edit shop info
+9. Delete shop
+10. View all state
+0. Logout
+Choose an option: Enter userId: Permission: CONTRACT_APPROVAL_ONLY
+
+--- SystemAdmin Menu ---
+1. Create user
+2. Update user password
+3. Delete user
+4. List users
+5. Change user permission
+6. View user permission
+7. Create shop
+8. Edit shop info
+9. Delete shop
+10. View all state
+0. Logout
+Choose an option: 
+===== Shop Rental System V1 =====
+Type register to create tenant account.
+Username (register/exit): Application ended.

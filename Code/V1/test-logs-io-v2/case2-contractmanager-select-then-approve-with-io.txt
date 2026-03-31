@@ -1,0 +1,74 @@
+﻿Case: ContractManager selects contract before approving
+Generated: 2026-03-31 23:47:13
+
+[User Input]
+cm
+pass
+1
+2
+1
+3
+0
+exit
+
+[Program Output]
+State loaded from data\app-state.properties.
+
+===== Shop Rental System V1 =====
+Type register to create tenant account.
+Username (register/exit): Password: Login successful: cm (contractmanager)
+
+--- ContractManager Menu ---
+1. List contracts
+2. Select active contract
+3. Approve active contract
+4. Update shop status
+5. Create shop
+6. Edit shop info
+7. Delete shop
+8. View all state
+0. Logout
+Choose an option: Contracts:
+- ID=1, tenant=freshMart, shop=A-101, status=PENDING_APPROVAL, baseRent=6200.0 [ACTIVE]
+
+--- ContractManager Menu ---
+1. List contracts
+2. Select active contract
+3. Approve active contract
+4. Update shop status
+5. Create shop
+6. Edit shop info
+7. Delete shop
+8. View all state
+0. Logout
+Choose an option: Contracts:
+- ID=1, tenant=freshMart, shop=A-101, status=PENDING_APPROVAL, baseRent=6200.0 [ACTIVE]
+Enter contract id to activate: Active contract set to ID: 1
+
+--- ContractManager Menu ---
+1. List contracts
+2. Select active contract
+3. Approve active contract
+4. Update shop status
+5. Create shop
+6. Edit shop info
+7. Delete shop
+8. View all state
+0. Logout
+Choose an option: [AUDIT] 2026-03-31T23:47:13.818072400 | CONTRACT_APPROVED | Contract 1 approved
+Contract approved and signed. Status: ACTIVE
+
+--- ContractManager Menu ---
+1. List contracts
+2. Select active contract
+3. Approve active contract
+4. Update shop status
+5. Create shop
+6. Edit shop info
+7. Delete shop
+8. View all state
+0. Logout
+Choose an option: 
+===== Shop Rental System V1 =====
+Type register to create tenant account.
+Username (register/exit): Application ended.
