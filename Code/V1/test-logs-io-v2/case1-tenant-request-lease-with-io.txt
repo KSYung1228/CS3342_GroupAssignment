@@ -1,0 +1,43 @@
+﻿Case: Tenant requests lease contract
+Generated: 2026-03-31 23:47:11
+
+[User Input]
+freshMart
+pass
+2
+1
+6200
+0
+exit
+
+[Program Output]
+No saved state found. Using default data.
+
+===== Shop Rental System V1 =====
+Type register to create tenant account.
+Username (register/exit): Password: Login successful: freshMart (tenant)
+
+--- Tenant Menu ---
+1. View open shops
+2. Request lease contract
+3. Select active contract
+4. Upload monthly sales record
+5. View my contracts/payments
+0. Logout
+Choose an option: Shops:
+- id=1, num=A-101, type=FNB, status=OPEN, area=35.0
+- id=2, num=A-102, type=POPUP, status=CLOSED, area=40.0
+Enter shop id: Enter base rent: [AUDIT] 2026-03-31T23:47:11.844887500 | LEASE_REQUESTED | Tenant freshMart requested shop A-101
+Contract request created. Contract ID: 1
+
+--- Tenant Menu ---
+1. View open shops
+2. Request lease contract
+3. Select active contract
+4. Upload monthly sales record
+5. View my contracts/payments
+0. Logout
+Choose an option: 
+===== Shop Rental System V1 =====
+Type register to create tenant account.
+Username (register/exit): Application ended.

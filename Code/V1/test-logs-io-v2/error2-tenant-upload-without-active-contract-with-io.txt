@@ -1,0 +1,37 @@
+Case: Error flow - tenant upload without active contract
+Generated: 2026-03-31 23:50:42
+
+[User Input]
+freshMart
+pass
+4
+0
+exit
+
+[Program Output]
+No saved state found. Using default data.
+
+===== Shop Rental System V1 =====
+Type register to create tenant account.
+Username (register/exit): Password: Login successful: freshMart (tenant)
+
+--- Tenant Menu ---
+1. View open shops
+2. Request lease contract
+3. Select active contract
+4. Upload monthly sales record
+5. View my contracts/payments
+0. Logout
+Choose an option: No active contract. Select one first.
+
+--- Tenant Menu ---
+1. View open shops
+2. Request lease contract
+3. Select active contract
+4. Upload monthly sales record
+5. View my contracts/payments
+0. Logout
+Choose an option: 
+===== Shop Rental System V1 =====
+Type register to create tenant account.
+Username (register/exit): Application ended.

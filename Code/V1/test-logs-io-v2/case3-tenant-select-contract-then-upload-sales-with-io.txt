@@ -1,0 +1,66 @@
+﻿Case: Tenant selects contract before uploading monthly sales
+Generated: 2026-03-31 23:47:15
+
+[User Input]
+freshMart
+pass
+3
+1
+4
+2026-03
+120000
+5
+0
+exit
+
+[Program Output]
+State loaded from data\app-state.properties.
+
+===== Shop Rental System V1 =====
+Type register to create tenant account.
+Username (register/exit): Password: Login successful: freshMart (tenant)
+
+--- Tenant Menu ---
+1. View open shops
+2. Request lease contract
+3. Select active contract
+4. Upload monthly sales record
+5. View my contracts/payments
+0. Logout
+Choose an option: My contracts:
+- ID=1, status=ACTIVE
+Enter contract id to activate: Active contract set to ID: 1
+
+--- Tenant Menu ---
+1. View open shops
+2. Request lease contract
+3. Select active contract
+4. Upload monthly sales record
+5. View my contracts/payments
+0. Logout
+Choose an option: Enter month (e.g. 2026-03): Enter total sales: [AUDIT] 2026-03-31T23:47:15.736425400 | MONTHLY_RECORD_UPLOADED | Contract 1 month 2026-03 commission 11600.0
+Monthly record uploaded. Payment ID: 1, amount: 17800.0
+
+--- Tenant Menu ---
+1. View open shops
+2. Request lease contract
+3. Select active contract
+4. Upload monthly sales record
+5. View my contracts/payments
+0. Logout
+Choose an option: My contracts:
+- ID=1, shop=A-101, status=ACTIVE [ACTIVE]
+My payments:
+- ID=1, amount=17800.0, status=UNVERIFIED [ACTIVE]
+
+--- Tenant Menu ---
+1. View open shops
+2. Request lease contract
+3. Select active contract
+4. Upload monthly sales record
+5. View my contracts/payments
+0. Logout
+Choose an option: 
+===== Shop Rental System V1 =====
+Type register to create tenant account.
+Username (register/exit): Application ended.

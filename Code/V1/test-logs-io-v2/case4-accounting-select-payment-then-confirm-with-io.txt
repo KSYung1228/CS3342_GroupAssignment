@@ -1,0 +1,61 @@
+﻿Case: Accounting selects payment before confirmation
+Generated: 2026-03-31 23:47:17
+
+[User Input]
+acct
+pass
+1
+2
+1
+3
+0
+exit
+
+[Program Output]
+State loaded from data\app-state.properties.
+
+===== Shop Rental System V1 =====
+Type register to create tenant account.
+Username (register/exit): Password: Login successful: acct (accounting)
+
+--- Accounting Menu ---
+1. List payments
+2. Select active payment
+3. Confirm active payment
+4. Inspect all shops
+5. View all state
+0. Logout
+Choose an option: Payments:
+- ID=1, contractId=1, amount=17800.0, status=UNVERIFIED [ACTIVE]
+
+--- Accounting Menu ---
+1. List payments
+2. Select active payment
+3. Confirm active payment
+4. Inspect all shops
+5. View all state
+0. Logout
+Choose an option: Payments:
+- ID=1, contractId=1, amount=17800.0, status=UNVERIFIED [ACTIVE]
+Enter payment id to activate: Active payment set to ID: 1
+
+--- Accounting Menu ---
+1. List payments
+2. Select active payment
+3. Confirm active payment
+4. Inspect all shops
+5. View all state
+0. Logout
+Choose an option: Payment 1 confirmed: true
+
+--- Accounting Menu ---
+1. List payments
+2. Select active payment
+3. Confirm active payment
+4. Inspect all shops
+5. View all state
+0. Logout
+Choose an option: 
+===== Shop Rental System V1 =====
+Type register to create tenant account.
+Username (register/exit): Application ended.

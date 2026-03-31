@@ -1,0 +1,18 @@
+Case: Error flow - invalid login
+Generated: 2026-03-31 23:50:30
+
+[User Input]
+wronguser
+wrongpass
+exit
+
+[Program Output]
+No saved state found. Using default data.
+
+===== Shop Rental System V1 =====
+Type register to create tenant account.
+Username (register/exit): Password: Login failed.
+
+===== Shop Rental System V1 =====
+Type register to create tenant account.
+Username (register/exit): Application ended.

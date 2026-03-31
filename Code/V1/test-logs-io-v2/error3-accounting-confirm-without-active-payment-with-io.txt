@@ -1,0 +1,37 @@
+Case: Error flow - accounting confirm without active payment
+Generated: 2026-03-31 23:50:53
+
+[User Input]
+acct
+pass
+3
+0
+exit
+
+[Program Output]
+No saved state found. Using default data.
+
+===== Shop Rental System V1 =====
+Type register to create tenant account.
+Username (register/exit): Password: Login successful: acct (accounting)
+
+--- Accounting Menu ---
+1. List payments
+2. Select active payment
+3. Confirm active payment
+4. Inspect all shops
+5. View all state
+0. Logout
+Choose an option: No active payment. Select one first.
+
+--- Accounting Menu ---
+1. List payments
+2. Select active payment
+3. Confirm active payment
+4. Inspect all shops
+5. View all state
+0. Logout
+Choose an option: 
+===== Shop Rental System V1 =====
+Type register to create tenant account.
+Username (register/exit): Application ended.
