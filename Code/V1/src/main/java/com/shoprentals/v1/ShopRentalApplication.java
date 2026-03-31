@@ -535,8 +535,8 @@ public class ShopRentalApplication {
             return;
         }
 
-        manager.createContract(contract, ctx.service);
-        tenant.signContract(contract);
+        manager.applyApproveContractService(contract, ctx.service);
+        //tenant.signContract(contract);
         saveStateQuietly(ctx);
         System.out.println("Contract approved and signed. Status: " + contract.getStatus());
     }
@@ -906,12 +906,12 @@ public class ShopRentalApplication {
         return "unknown";
     }
 
-    private static <T extends User> T getFirstUserByRole(AppContext ctx, String role, Class<T> clazz) {
+    private static <T extends User> T getFirstUserByRole(AppContext ctx, String role, Class<T> c) {
         for (Map.Entry<String, String> entry : ctx.roleByUsername.entrySet()) {
             if (role.equals(entry.getValue())) {
                 User user = ctx.usersByUsername.get(entry.getKey());
-                if (clazz.isInstance(user)) {
-                    return clazz.cast(user);
+                if (c.isInstance(user)) {
+                    return c.cast(user);
                 }
             }
         }

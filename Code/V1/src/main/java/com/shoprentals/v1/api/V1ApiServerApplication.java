@@ -421,7 +421,7 @@ public class V1ApiServerApplication {
             throw new BadRequestException("Only pending contracts can be approved");
         }
 
-        manager.createContract(contract, appContext.service);
+        manager.applyApproveContractService(contract, appContext.service);
         tenant.signContract(contract);
         appContext.logs.add(0, now() + " | Contract approved: " + contractId);
     }

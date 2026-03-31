@@ -11,7 +11,7 @@ public class ContractManager extends User {
         return contract.getStatus() == ContractStatus.PENDING_APPROVAL;
     }
 
-    public void createContract(LeaseContract contract, ShopRentalService service) {
+    public void applyApproveContractService(LeaseContract contract, ShopRentalService service) {
         service.approveContract(contract);
     }
 
