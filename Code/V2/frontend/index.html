@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop Rental System V2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="bg-decor bg-decor-a"></div>
+  <div class="bg-decor bg-decor-b"></div>
+
+  <main class="app-shell">
+
+    <!-- Login -->
+    <section id="loginView" class="view active">
+      <div class="auth-card glass">
+        <div class="auth-logo">🏬</div>
+        <h1>Shop Rental System V2</h1>
+        <p class="sub">Commercial Property Management</p>
+        <div class="tabs">
+          <button id="tabLogin" class="tab active" type="button">Login</button>
+          <button id="tabRegister" class="tab" type="button">Tenant Register</button>
+        </div>
+        <form id="loginForm" class="panel-form active">
+          <label>Username <input id="loginUsername" type="text" autocomplete="username" required /></label>
+          <label>Password <input id="loginPassword" type="password" autocomplete="current-password" required /></label>
+          <button class="btn btn-primary" type="submit">Login</button>
+        </form>
+        <form id="registerForm" class="panel-form">
+          <label>Username <input id="regUsername" type="text" required /></label>
+          <label>Password <input id="regPassword" type="password" required /></label>
+          <button class="btn btn-primary" type="submit">Create Tenant Account</button>
+        </form>
+        <p class="hint">Default accounts: admin/admin123 &middot; freshMart/pass &middot; cm/pass &middot; acct/pass</p>
+        <p id="authMessage" class="message"></p>
+      </div>
+    </section>
+
+    <!-- App -->
+    <section id="appView" class="view">
+      <header class="topbar glass">
+        <div class="topbar-brand">
+          <span class="topbar-icon">🏬</span>
+          <div>
+            <h2 id="welcomeText">Welcome</h2>
+            <p id="roleText" class="sub"></p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button id="btnResetData" class="btn btn-ghost" type="button">Reset Demo Data</button>
+          <button id="btnLogout" class="btn btn-primary" type="button">Logout</button>
+        </div>
+      </header>
+
+      <nav id="roleNav" class="role-nav"></nav>
+      <p id="appMessage" class="message app-msg"></p>
+
+      <section class="content-grid">
+
+        <article id="floorPlanPanel" class="panel hidden full-width">
+          <div class="panel-head">
+            <h3>🗺️ Mall Floor Plan</h3>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <span class="chip" id="floorPlanChip">Select a shop</span>
+              <button id="btnDrawMode" class="btn btn-sm btn-ghost hidden" type="button">✏️ Draw Shop</button>
+            </div>
+          </div>
+          <!-- Draw toolbar (CM only, shown when draw mode active) -->
+          <div id="drawToolbar" class="draw-toolbar hidden">
+            <strong>Draw mode:</strong>
+            <span>Click &amp; drag empty cells to define shape, then:</span>
+            <label>No. <input id="drawShopNum" type="text" placeholder="e.g. C-101" style="width:90px" /></label>
+            <label>Area(m²) <input id="drawShopArea" type="number" min="1" step="0.1" placeholder="30" style="width:70px" /></label>
+            <label>Type
+              <select id="drawShopType">
+                <option value="FNB">F&amp;B</option>
+                <option value="POPUP">Pop-up</option>
+                <option value="SOLID">Solid</option>
+              </select>
+            </label>
+            <button id="btnDrawConfirm" class="btn btn-sm btn-primary" type="button">Add Shop</button>
+            <button id="btnDrawCancel" class="btn btn-sm btn-ghost" type="button">Cancel</button>
+          </div>
+          <div class="floor-plan-wrap">
+            <div class="floor-plan-scroll">
+              <div id="floorPlanGrid" class="floor-plan-grid"></div>
+              <div class="floor-legend">
+                <span class="legend-item"><span class="legend-dot open"></span>Available</span>
+                <span class="legend-item"><span class="legend-dot closed"></span>Closed</span>
+                <span class="legend-item"><span class="legend-dot repair"></span>Under Repair</span>
+                <span class="legend-item"><span class="legend-dot rented"></span>Rented</span>
+              </div>
+              <p id="dragHint" class="drag-hint hidden">✋ Drag to move &nbsp;·&nbsp; ↘ Corner to resize &nbsp;·&nbsp; ✏️ Draw Shop to paint new shape</p>
+            </div>
+            <div id="shopInfoCard" class="shop-info-card hidden">
+              <h4 id="shopInfoTitle">Shop Info</h4>
+              <div id="shopInfoBody"></div>
+              <div id="shopInfoActions" class="shop-info-actions"></div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Tenant: My Contracts -->
+        <article id="tenantContracts" class="panel hidden">
+          <div class="panel-head"><h3>My Contracts</h3><span class="chip">Tenant</span></div>
+          <div id="tenantContractList" class="table-wrap"></div>
+        </article>
+
+        <!-- Tenant: Upload Sales -->
+        <article id="tenantSales" class="panel hidden">
+          <div class="panel-head"><h3>Upload Monthly Sales</h3><span class="chip">Tenant</span></div>
+          <div id="activeTenantContractInfo" class="active-info"></div>
+          <form id="salesForm" class="inline-form">
+            <label>Month <input id="salesMonth" type="month" required /></label>
+            <label>Total Sales <input id="salesAmount" type="number" min="0" step="0.01" required /></label>
+            <button class="btn btn-primary" type="submit">Generate Payment</button>
+          </form>
+        </article>
+
+        <!-- Tenant: Payments -->
+        <article id="tenantPayments" class="panel hidden">
+          <div class="panel-head"><h3>My Payments</h3><span class="chip">Tenant</span></div>
+          <div id="tenantPaymentList" class="table-wrap"></div>
+        </article>
+
+        <!-- Manager: Contracts -->
+        <article id="managerContracts" class="panel hidden">
+          <div class="panel-head"><h3>Contract Management</h3><span class="chip">Contract Manager</span></div>
+          <div id="managerContractList" class="table-wrap"></div>
+        </article>
+
+        <!-- Manager: Shop Admin -->
+        <article id="managerShops" class="panel hidden">
+          <div class="panel-head">
+            <h3>Shop Management</h3>
+            <button id="btnAddShop" class="btn btn-sm btn-primary" type="button">+ Add Shop</button>
+          </div>
+          <div id="managerShopList" class="table-wrap"></div>
+          <div id="shopFormWrap" class="form-wrap hidden">
+            <h4 id="shopFormTitle">Add Shop</h4>
+            <form id="shopForm">
+              <input type="hidden" id="shopFormId" />
+              <div class="shop-form-grid">
+                <label>Shop No. <input id="shopFormNum" type="text" required /></label>
+                <label>Area (m²) <input id="shopFormArea" type="number" min="1" step="0.1" required /></label>
+                <label>Type
+                  <select id="shopFormType">
+                    <option value="FNB">F&amp;B</option>
+                    <option value="POPUP">Pop-up</option>
+                    <option value="SOLID">Solid</option>
+                  </select>
+                </label>
+                <label>Status
+                  <select id="shopFormStatus">
+                    <option value="OPEN">Open</option>
+                    <option value="CLOSED">Closed</option>
+                    <option value="UNDER_REPAIR">Under Repair</option>
+                  </select>
+                </label>
+              </div>
+              <fieldset class="pos-fieldset">
+                <legend>Floor Plan Position (or drag on map)</legend>
+                <div class="pos-grid">
+                  <label>Col <input id="shopFormPosX" type="number" min="0" value="0" /></label>
+                  <label>Row <input id="shopFormPosY" type="number" min="0" value="0" /></label>
+                  <label>Width <input id="shopFormWidth" type="number" min="1" value="2" /></label>
+                  <label>Height <input id="shopFormHeight" type="number" min="1" value="2" /></label>
+                </div>
+              </fieldset>
+              <div class="form-actions" style="margin-top:14px">
+                <button class="btn btn-primary" type="submit">Save</button>
+                <button class="btn btn-ghost" type="button" id="btnCancelShopForm">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </article>
+
+        <!-- Accounting: Payments -->
+        <article id="accountingPayments" class="panel hidden">
+          <div class="panel-head"><h3>Payment Verification</h3><span class="chip">Accounting</span></div>
+          <div id="accountingPaymentList" class="table-wrap"></div>
+        </article>
+
+        <!-- Accounting: Inspect -->
+        <article id="accountingInspect" class="panel hidden">
+          <div class="panel-head"><h3>Shop Inspection</h3><span class="chip">Accounting</span></div>
+          <div id="accountingShopList" class="table-wrap"></div>
+        </article>
+
+        <!-- Admin: Users -->
+        <article id="adminUsers" class="panel hidden">
+          <div class="panel-head">
+            <h3>User Management</h3>
+            <button id="btnAddUser" class="btn btn-sm btn-primary" type="button">+ Add User</button>
+          </div>
+          <div id="adminUserList" class="table-wrap"></div>
+          <div id="userFormWrap" class="form-wrap hidden">
+            <h4>Add User</h4>
+            <form id="userForm" class="inline-form">
+              <label>Role
+                <select id="userFormRole">
+                  <option value="tenant">Tenant</option>
+                  <option value="contractmanager">Contract Manager</option>
+                  <option value="accounting">Accounting</option>
+                </select>
+              </label>
+              <label>Username <input id="userFormUsername" type="text" required /></label>
+              <label>Password <input id="userFormPassword" type="password" required /></label>
+              <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Create</button>
+                <button class="btn btn-ghost" type="button" id="btnCancelUserForm">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </article>
+
+        <!-- Admin: Shops -->
+        <article id="adminShops" class="panel hidden">
+          <div class="panel-head"><h3>Shop Overview (Admin)</h3></div>
+          <div id="adminShopList" class="table-wrap"></div>
+        </article>
+
+        <!-- Audit Log -->
+        <article id="auditLogPanel" class="panel hidden">
+          <div class="panel-head"><h3>📋 Activity Log</h3></div>
+          <div id="auditLogList" class="log-list"></div>
+        </article>
+
+      </section>
+    </section>
+  </main>
+
+  <!-- Lease Request Modal -->
+  <div id="leaseModal" class="modal-overlay hidden">
+    <div class="modal glass">
+      <h3>Request Lease</h3>
+      <p id="leaseModalShopInfo" class="modal-info"></p>
+      <form id="leaseForm" class="inline-form">
+        <label>Base Rent (HKD/month) <input id="leaseBaseRent" type="number" min="1" step="0.01" required /></label>
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit">Submit Request</button>
+          <button class="btn btn-ghost" type="button" id="btnCloseLeaseModal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
