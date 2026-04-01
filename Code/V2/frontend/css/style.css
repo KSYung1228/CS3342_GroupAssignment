@@ -249,15 +249,48 @@ tr:hover td { background: rgba(15,108,95,.03); }
 .log-entry:last-child { border-bottom: none; }
 .empty { color: var(--muted); font-size: 0.85rem; padding: 6px 0; margin: 0; }
 
+/* ── Role-gated elements (CSS safety net, immune to JS timing) ── */
+/* Hide CM-only controls for everyone except CM */
+body:not([data-role="contractmanager"]) #btnDrawMode,
+body:not([data-role="contractmanager"]) #dragHint,
+body:not([data-role="contractmanager"]) #drawToolbar {
+  display: none !important;
+}
+
 /* ════════════════════════════════════════════════
    FLOOR PLAN
    ════════════════════════════════════════════════ */
 
-.floor-plan-wrap {
+/* Floor tabs */
+.floor-tabs {
   display: flex;
-  gap: 16px;
-  align-items: flex-start;
   flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.floor-tab {
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.7);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: all .15s;
+}
+.floor-tab.active {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+.floor-tab:hover:not(.active) {
+  background: rgba(15,108,95,.12);
+  color: var(--brand);
+}
+
+.floor-plan-wrap {
+  display: block;
 }
 
 /* Scrollable container so the grid never overflows the panel */
@@ -271,15 +304,14 @@ tr:hover td { background: rgba(15,108,95,.03); }
 /* The actual CSS-grid canvas */
 .floor-plan-grid {
   display: grid;
-  grid-template-columns: repeat(8, 72px);
-  grid-template-rows: repeat(6, 72px);
+  grid-template-columns: repeat(16, 96px);
+  grid-template-rows: repeat(12, 96px);
   gap: 5px;
   background: #e4ebe5;
   padding: 10px;
   border-radius: 10px;
   border: 2px solid var(--line);
   position: relative;
-  /* minimum size so it doesn't collapse */
   min-width: max-content;
   user-select: none;
 }
@@ -291,15 +323,16 @@ tr:hover td { background: rgba(15,108,95,.03); }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   font-weight: 600;
   text-align: center;
-  padding: 4px;
+  padding: 6px;
   border: 2px solid transparent;
   position: relative;
   overflow: visible;
   transition: box-shadow .12s;
   cursor: pointer;
+  box-sizing: border-box;
 }
 .floor-cell:hover { box-shadow: 0 4px 14px rgba(0,0,0,.18); z-index: 2; }
 .floor-cell.selected { border-color: var(--accent) !important; box-shadow: 0 0 0 3px rgba(230,138,46,.35); z-index: 3; }
@@ -309,9 +342,9 @@ tr:hover td { background: rgba(15,108,95,.03); }
 .floor-cell.status-UNDER_REPAIR { background: #fef3e0; color: #7a4a00; border-color: #f0d898; }
 .floor-cell.status-RENTED     { background: #d0e8f8; color: #0a3060; border-color: #a0c8e8; }
 
-.floor-cell .cell-icon  { font-size: 1.1rem; line-height: 1; }
-.floor-cell .cell-num   { font-size: 0.78rem; font-weight: 700; margin-top: 2px; }
-.floor-cell .cell-type  { font-size: 0.62rem; opacity: 0.75; }
+.floor-cell .cell-icon  { font-size: 1.3rem; line-height: 1; }
+.floor-cell .cell-num   { font-size: 0.85rem; font-weight: 700; margin-top: 3px; }
+.floor-cell .cell-type  { font-size: 0.68rem; opacity: 0.75; }
 
 /* ── Drag mode (CM only) ── */
 .floor-cell.draggable { cursor: grab; }
@@ -347,17 +380,43 @@ tr:hover td { background: rgba(15,108,95,.03); }
   transition: none;
 }
 
-/* ── Shop Info Sidebar ── */
-.shop-info-card {
-  flex: 0 0 260px;
+/* ── Shop Info Floating Popover ── */
+.shop-popover {
+  position: fixed;
+  z-index: 50;
+  width: 260px;
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 13px;
   padding: 16px;
-  align-self: flex-start;
+  box-shadow: 0 8px 28px rgba(19,33,47,0.18);
+  pointer-events: auto;
+  /* smooth appear */
+  animation: popoverIn .15s ease;
 }
-.shop-info-card.hidden { display: none; }
-.shop-info-card h4 { margin-bottom: 10px; color: var(--brand-strong); font-size: 0.95rem; }
+.shop-popover.hidden { display: none; }
+
+@keyframes popoverIn {
+  from { opacity: 0; transform: scale(0.94) translateY(4px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+.popover-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--muted);
+  padding: 2px 5px;
+  border-radius: 5px;
+  line-height: 1;
+}
+.popover-close:hover { background: var(--bg-2); color: var(--ink); }
+
+.shop-popover h4 { margin-bottom: 10px; color: var(--brand-strong); font-size: 0.95rem; padding-right: 20px; }
 .shop-info-body-row {
   display: flex;
   justify-content: space-between;
@@ -408,20 +467,65 @@ tr:hover td { background: rgba(15,108,95,.03); }
   cursor: default;
 }
 .grid-empty-cell {
-  border-radius: 6px;
-  background: rgba(0,0,0,0.04);
-  border: 1px dashed rgba(0,0,0,0.12);
+  border-radius: 4px;
+  background: rgba(0,0,0,0.03);
+  border: 1px dashed rgba(0,0,0,0.10);
   transition: background .1s;
   cursor: crosshair;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
 }
-.grid-empty-cell:hover,
-.grid-empty-cell.paint-hover {
-  background: rgba(15,108,95,0.15);
+.grid-empty-cell:hover {
+  background: rgba(15,108,95,0.10);
   border-color: var(--brand);
 }
 .grid-empty-cell.paint-selected {
-  background: rgba(15,108,95,0.28);
+  background: rgba(15,108,95,0.25);
   border: 2px solid var(--brand);
+  border-radius: 0;
+  z-index: 2;
+}
+
+/* Hole cells — gaps inside custom-shape shops, blend into grid background */
+.grid-hole-cell {
+  background: #e4ebe5;
+  border: none;
+  border-radius: 0;
+  cursor: default;
+  z-index: 2;
+}
+
+/* Overlay divs that render the connected painted shape */
+.draw-cell-overlay {
+  position: absolute;
+  background: rgba(15,108,95,0.25);
+  pointer-events: none;
+  z-index: 5;
+  box-sizing: border-box;
+}
+
+/* Custom-shape shop cells: no radius/border — shape overlay handles the outline.
+   Outline fills the 5px CSS grid gap visually without affecting layout. */
+.floor-cell.no-radius {
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: 3px solid var(--cell-fill-color, #d4f0e0);
+  outline-offset: 0px;
+  z-index: 1;
+}
+.floor-cell.no-radius.status-OPEN       { --cell-fill-color: #d4f0e0; }
+.floor-cell.no-radius.status-CLOSED     { --cell-fill-color: #fde8e8; }
+.floor-cell.no-radius.status-UNDER_REPAIR { --cell-fill-color: #fef3e0; }
+.floor-cell.no-radius.status-RENTED     { --cell-fill-color: #d0e8f8; }
+
+/* Shape overlay for saved cell-list shops */
+.shop-shape-overlay {
+  position: absolute;
+  pointer-events: none;
+  z-index: 4;
+  box-sizing: border-box;
 }
 
 /* Draw toolbar shown in CM floor plan header */
@@ -482,10 +586,10 @@ tr:hover td { background: rgba(15,108,95,.03); }
   .content-grid { grid-template-columns: 1fr; }
   .topbar { padding: 10px 14px; }
   .floor-plan-grid {
-    grid-template-columns: repeat(8, 52px);
-    grid-template-rows: repeat(6, 52px);
+    grid-template-columns: repeat(16, 60px);
+    grid-template-rows: repeat(12, 60px);
   }
-  .shop-info-card { flex: 1 1 100%; }
+  /* shop-info-card is now a fixed popover, no responsive override needed */
   .inline-form label { flex: 1 1 100%; }
   .shop-form-grid { grid-template-columns: 1fr; }
 }

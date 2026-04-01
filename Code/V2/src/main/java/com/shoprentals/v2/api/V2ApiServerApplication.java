@@ -43,6 +43,7 @@ public class V2ApiServerApplication {
         final Map<Integer, Double> paymentSalesById = new HashMap<>();
         final Map<String, Integer> activeContractIdByUsername = new HashMap<>();
         final List<String> logs = new ArrayList<>();
+        final List<String> floors = new ArrayList<>(); // ordered floor names
         int nextUserNumber = 1000;
 
         AppContext(ShopRentalService service, SystemAdmin admin, List<Shop> shops,
@@ -221,6 +222,43 @@ public class V2ApiServerApplication {
             appContext.systemAdmin.changeUserPermission(userId, required(body,"permission")); saveStateQuietly(appContext);
             sendJson(ex, 200, Map.of("message", "Permission updated")); return;
         }
+        if ("GET".equals(method) && "/floors".equals(route)) {
+            sendJson(ex, 200, Map.of("floors", new ArrayList<>(appContext.floors))); return;
+        }
+        if ("POST".equals(method) && "/floors".equals(route)) {
+            Map<String, String> body = readStringMap(ex);
+            String name = required(body, "name").trim();
+            if (appContext.floors.contains(name)) throw new BadRequestException("Floor already exists");
+            appContext.floors.add(name);
+            saveStateQuietly(appContext);
+            appContext.logs.add(0, now() + " | Floor added: " + name);
+            sendJson(ex, 201, Map.of("floors", new ArrayList<>(appContext.floors))); return;
+        }
+        if (route.startsWith("/floors/") && "DELETE".equals(method)) {
+            String floorName = URLDecoder.decode(route.substring("/floors/".length()), StandardCharsets.UTF_8);
+            if (!appContext.floors.contains(floorName)) throw new NotFoundException("Floor not found");
+            boolean hasShops = appContext.shops.stream().anyMatch(s -> floorName.equals(s.getFloor()));
+            if (hasShops) throw new BadRequestException("Cannot delete floor with existing shops");
+            appContext.floors.remove(floorName);
+            saveStateQuietly(appContext);
+            appContext.logs.add(0, now() + " | Floor deleted: " + floorName);
+            sendJson(ex, 200, Map.of("floors", new ArrayList<>(appContext.floors))); return;
+        }
+        if (route.startsWith("/floors/") && "PUT".equals(method)) {
+            String oldName = URLDecoder.decode(route.substring("/floors/".length()), StandardCharsets.UTF_8);
+            Map<String, String> body = readStringMap(ex);
+            String newName = required(body, "name").trim();
+            int idx = appContext.floors.indexOf(oldName);
+            if (idx < 0) throw new NotFoundException("Floor not found");
+            if (!oldName.equals(newName) && appContext.floors.contains(newName))
+                throw new BadRequestException("Floor name already exists");
+            appContext.floors.set(idx, newName);
+            appContext.shops.stream().filter(s -> oldName.equals(s.getFloor())).forEach(s -> s.setFloor(newName));
+            saveStateQuietly(appContext);
+            appContext.logs.add(0, now() + " | Floor renamed: " + oldName + " -> " + newName);
+            sendJson(ex, 200, Map.of("floors", new ArrayList<>(appContext.floors))); return;
+        }
+
         sendJson(ex, 404, Map.of("error", "Route not found"));
     }
 
@@ -232,15 +270,16 @@ public class V2ApiServerApplication {
         SystemAdmin admin = new SystemAdmin("U001", "admin", "admin123");
         List<Shop> shops = new ArrayList<>();
         shops.add(new Shop(1, "A-101", ShopStatus.OPEN,  35.0, ShopType.FNB,   1, 1, 2, 2));
-        shops.add(new Shop(2, "A-102", ShopStatus.CLOSED, 40.0, ShopType.POPUP, 3, 1, 2, 2));
-        shops.add(new Shop(3, "B-101", ShopStatus.OPEN,  50.0, ShopType.SOLID,  1, 3, 3, 2));
-        shops.add(new Shop(4, "B-102", ShopStatus.OPEN,  30.0, ShopType.FNB,    4, 3, 2, 2));
+        shops.add(new Shop(2, "A-102", ShopStatus.CLOSED, 40.0, ShopType.POPUP, 5, 1, 2, 2));
+        shops.add(new Shop(3, "B-101", ShopStatus.OPEN,  50.0, ShopType.SOLID,  1, 5, 3, 2));
+        shops.add(new Shop(4, "B-102", ShopStatus.OPEN,  30.0, ShopType.FNB,    6, 5, 2, 2));
         AppContext ctx = new AppContext(service, admin, shops, new StandardLeaseFactory(), new ProgressiveCommissionStrategy(), audit);
         registerUser(ctx, admin, "systemadmin", "admin123");
         registerUser(ctx, admin.createAccount("accounting", "U100", "acct", "pass"), "accounting", "pass");
         registerUser(ctx, admin.createAccount("tenant", "U200", "freshMart", "pass"), "tenant", "pass");
         registerUser(ctx, admin.createAccount("contractmanager", "U300", "cm", "pass"), "contractmanager", "pass");
         ctx.logs.add(0, now() + " | System initialized with V2 sample data");
+        ctx.floors.addAll(List.of("G", "1F", "2F"));
         return ctx;
     }
 
@@ -347,6 +386,13 @@ public class V2ApiServerApplication {
         int pw = body.containsKey("width") ? (int) Math.round(((Number) body.get("width")).doubleValue()) : 2;
         int ph = body.containsKey("height") ? (int) Math.round(((Number) body.get("height")).doubleValue()) : 2;
         Shop shop = new Shop(nextId, num, ShopStatus.OPEN, area, type, px, py, pw, ph);
+        if (body.containsKey("floor")) shop.setFloor(body.get("floor").toString());
+        if (body.containsKey("cells")) {
+            List<String> cells = extractStringList(body.get("cells"));
+            if (!cells.isEmpty()) shop.setCells(cells);
+        }
+        // Check for position overlap on the same floor
+        checkPositionConflict(shop, -1);
         appContext.shops.add(shop);
         appContext.logs.add(0, now() + " | Shop created: " + num);
     }
@@ -364,7 +410,19 @@ public class V2ApiServerApplication {
         ShopStatus prev = shop.getStatus();
         shop.editStoreInfo(num, area, type);
         shop.updateStoreStatus(status);
-        if (body.containsKey("posX")) {
+        if (body.containsKey("floor")) shop.setFloor(body.get("floor").toString());
+        if (body.containsKey("cells")) {
+            List<String> cells = extractStringList(body.get("cells"));
+            if (!cells.isEmpty()) {
+                shop.setCells(cells);
+            } else if (body.containsKey("posX")) {
+                int px = (int) Math.round(((Number) body.get("posX")).doubleValue());
+                int py = (int) Math.round(((Number) body.get("posY")).doubleValue());
+                int pw = (int) Math.round(((Number) body.get("width")).doubleValue());
+                int ph = (int) Math.round(((Number) body.get("height")).doubleValue());
+                shop.setPosition(px, py, pw, ph);
+            }
+        } else if (body.containsKey("posX")) {
             int px = (int) Math.round(((Number) body.get("posX")).doubleValue());
             int py = (int) Math.round(((Number) body.get("posY")).doubleValue());
             int pw = (int) Math.round(((Number) body.get("width")).doubleValue());
@@ -377,14 +435,21 @@ public class V2ApiServerApplication {
                 for (LeaseContract c : appContext.contracts)
                     if (c.getShop().getShopId() == shopId) acct.alterRentByStoreStatus(c, shop);
         }
+        // Check for position overlap after all position/cell updates (exclude self)
+        checkPositionConflict(shop, shopId);
         appContext.logs.add(0, now() + " | Shop updated: " + shop.getShopNum() + " => " + shop.getStatus());
     }
 
     private static void deleteShop(int shopId) {
         Shop shop = findShopById(shopId);
         if (shop == null) throw new NotFoundException("Shop not found");
-        for (LeaseContract c : appContext.contracts)
-            if (c.getShop().getShopId() == shopId) throw new BadRequestException("Cannot delete shop with existing contracts");
+        for (LeaseContract c : appContext.contracts) {
+            if (c.getShop().getShopId() != shopId) continue;
+            if (c.getStatus() == ContractStatus.ACTIVE)
+                throw new BadRequestException("Cannot delete shop: it has an active lease contract (#" + c.getContractId() + ")");
+            if (c.getStatus() == ContractStatus.PENDING_APPROVAL)
+                throw new BadRequestException("Cannot delete shop: it has a pending lease contract (#" + c.getContractId() + ")");
+        }
         appContext.shops.remove(shop);
         appContext.logs.add(0, now() + " | Shop deleted: " + shop.getShopNum());
     }
@@ -430,6 +495,7 @@ public class V2ApiServerApplication {
         m.put("users", usersDto());
         m.put("activeContractIdByUser", new HashMap<>(appContext.activeContractIdByUsername));
         m.put("permissions", appContext.systemAdmin.getUserPermissionsSnapshot());
+        m.put("floors", new ArrayList<>(appContext.floors));
         List<String> combined = new ArrayList<>(appContext.auditLog.getEntries());
         combined.addAll(appContext.logs);
         m.put("logs", combined);
@@ -453,6 +519,8 @@ public class V2ApiServerApplication {
         m.put("posY", s.getPosY());
         m.put("width", s.getWidth());
         m.put("height", s.getHeight());
+        m.put("cells", s.getCells());
+        m.put("floor", s.getFloor());
         return m;
     }
 
@@ -661,6 +729,9 @@ public class V2ApiServerApplication {
             p.setProperty(pfx+"posY", String.valueOf(s.getPosY()));
             p.setProperty(pfx+"width", String.valueOf(s.getWidth()));
             p.setProperty(pfx+"height", String.valueOf(s.getHeight()));
+            // persist cell list (pipe-separated, e.g. "1,2|1,3|2,2")
+            p.setProperty(pfx+"cells", String.join("|", s.getCells()));
+            p.setProperty(pfx+"floor", s.getFloor());
         }
         p.setProperty("user.count", String.valueOf(ctx.usersByUsername.size()));
         int ui = 0;
@@ -700,6 +771,7 @@ public class V2ApiServerApplication {
         p.setProperty("nextContractId", String.valueOf(ctx.service.getNextContractId()));
         p.setProperty("nextRecordId", String.valueOf(ctx.service.getNextRecordId()));
         p.setProperty("nextPaymentId", String.valueOf(ctx.service.getNextPaymentId()));
+        p.setProperty("floors", String.join("|", ctx.floors));
         Map<String, String> perms = ctx.systemAdmin.getUserPermissionsSnapshot();
         p.setProperty("perm.count", String.valueOf(perms.size()));
         int pi = 0;
@@ -725,8 +797,17 @@ public class V2ApiServerApplication {
                 Double.parseDouble(p.getProperty(pfx+"area","0")),
                 ShopType.valueOf(p.getProperty(pfx+"type","SOLID")),
                 parseInt(p.getProperty(pfx+"posX","0")), parseInt(p.getProperty(pfx+"posY","0")),
-                parseInt(p.getProperty(pfx+"width","2")), parseInt(p.getProperty(pfx+"height","2"))
+                parseInt(p.getProperty(pfx+"width","2")), parseInt(p.getProperty(pfx+"height","2")),
+                p.getProperty(pfx+"floor","G")
             ));
+            // restore cell list if present
+            String cellsRaw = p.getProperty(pfx+"cells","");
+            if (!cellsRaw.isBlank()) {
+                Shop loaded = ctx.shops.get(ctx.shops.size() - 1);
+                List<String> cells = new ArrayList<>(List.of(cellsRaw.split("\\|")));
+                cells.removeIf(String::isBlank);
+                if (!cells.isEmpty()) loaded.setCells(cells);
+            }
         }
         int uc = parseInt(p.getProperty("user.count","0"));
         ctx.usersByUsername.clear(); ctx.roleByUsername.clear(); ctx.passwordByUsername.clear();
@@ -789,6 +870,10 @@ public class V2ApiServerApplication {
         ctx.service.setNextContractId(parseInt(p.getProperty("nextContractId","1")));
         ctx.service.setNextRecordId(parseInt(p.getProperty("nextRecordId","1")));
         ctx.service.setNextPaymentId(parseInt(p.getProperty("nextPaymentId","1")));
+        // floors
+        String floorsRaw = p.getProperty("floors", "G|1F|2F");
+        ctx.floors.clear();
+        for (String f : floorsRaw.split("\\|")) if (!f.isBlank()) ctx.floors.add(f);
         int permCount = parseInt(p.getProperty("perm.count","0"));
         Map<String, String> perms = new HashMap<>();
         for (int i = 0; i < permCount; i++) {
@@ -801,5 +886,47 @@ public class V2ApiServerApplication {
 
     private static int parseInt(String s) {
         try { return Integer.parseInt(s.trim()); } catch (Exception e) { return 0; }
+    }
+
+    /** Throws BadRequestException if the shop's cells overlap any other shop on the same floor.
+     *  @param excludeId shop ID to exclude from check (pass -1 for new shops, shopId for updates) */
+    private static void checkPositionConflict(Shop shop, int excludeId) {
+        Set<String> newCells = new java.util.HashSet<>();
+        if (shop.hasCells()) {
+            newCells.addAll(shop.getCells());
+        } else {
+            for (int c = shop.getPosX(); c < shop.getPosX() + shop.getWidth(); c++)
+                for (int r = shop.getPosY(); r < shop.getPosY() + shop.getHeight(); r++)
+                    newCells.add(c + "," + r);
+        }
+        String floor = shop.getFloor() != null ? shop.getFloor() : "G";
+        for (Shop existing : appContext.shops) {
+            if (existing.getShopId() == excludeId) continue;
+            String existingFloor = existing.getFloor() != null ? existing.getFloor() : "G";
+            if (!existingFloor.equals(floor)) continue;
+            Set<String> existingCells = new java.util.HashSet<>();
+            if (existing.hasCells()) {
+                existingCells.addAll(existing.getCells());
+            } else {
+                for (int c = existing.getPosX(); c < existing.getPosX() + existing.getWidth(); c++)
+                    for (int r = existing.getPosY(); r < existing.getPosY() + existing.getHeight(); r++)
+                        existingCells.add(c + "," + r);
+            }
+            existingCells.retainAll(newCells);
+            if (!existingCells.isEmpty())
+                throw new BadRequestException(
+                    "Position conflict: overlaps with shop " + existing.getShopNum()
+                    + " (#" + existing.getShopId() + ") on floor " + floor
+                    + " at cells " + existingCells);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<String> extractStringList(Object raw) {
+        List<String> result = new ArrayList<>();
+        if (raw instanceof List<?> list) {
+            for (Object item : list) if (item != null) result.add(item.toString());
+        }
+        return result;
     }
 }

@@ -52,9 +52,9 @@ public class ShopRentalApplication {
 
         List<Shop> shops = new ArrayList<>();
         shops.add(new Shop(1, "A-101", ShopStatus.OPEN,  35.0, ShopType.FNB,   1, 1, 2, 2));
-        shops.add(new Shop(2, "A-102", ShopStatus.CLOSED, 40.0, ShopType.POPUP, 3, 1, 2, 2));
-        shops.add(new Shop(3, "B-101", ShopStatus.OPEN,  50.0, ShopType.SOLID,  1, 3, 3, 2));
-        shops.add(new Shop(4, "B-102", ShopStatus.OPEN,  30.0, ShopType.FNB,    4, 3, 2, 2));
+        shops.add(new Shop(2, "A-102", ShopStatus.CLOSED, 40.0, ShopType.POPUP, 5, 1, 2, 2));
+        shops.add(new Shop(3, "B-101", ShopStatus.OPEN,  50.0, ShopType.SOLID,  1, 5, 3, 2));
+        shops.add(new Shop(4, "B-102", ShopStatus.OPEN,  30.0, ShopType.FNB,    6, 5, 2, 2));
 
         AppContext ctx = new AppContext(service, admin, shops, new StandardLeaseFactory(), new ProgressiveCommissionStrategy());
         registerUser(ctx, admin, "systemadmin", "admin123");
@@ -337,24 +337,80 @@ public class ShopRentalApplication {
 
     private static void createShopCLI(Scanner sc, AppContext ctx) {
         int nextId = ctx.allShops.stream().mapToInt(Shop::getShopId).max().orElse(0) + 1;
+
         System.out.print("Shop number: ");
         String num = sc.nextLine().trim();
         if (num.isEmpty()) { System.out.println("Shop number cannot be empty."); return; }
-        System.out.print("Area: ");
-        double area = Double.parseDouble(sc.nextLine().trim());
+
+        System.out.print("Area (m²): ");
+        double area;
+        try { area = Double.parseDouble(sc.nextLine().trim()); }
+        catch (NumberFormatException e) { System.out.println("Invalid area."); return; }
+        if (area <= 0) { System.out.println("Area must be greater than zero."); return; }
+
         System.out.print("Type (FNB/POPUP/SOLID): ");
         ShopType type = parseShopType(sc.nextLine().trim());
         if (type == null) { System.out.println("Invalid type."); return; }
+
+        // Floor selection
+        Set<String> knownFloors = new java.util.LinkedHashSet<>();
+        ctx.allShops.forEach(s -> knownFloors.add(s.getFloor() != null ? s.getFloor() : "G"));
+        if (knownFloors.isEmpty()) knownFloors.add("G");
+        System.out.println("Available floors: " + knownFloors);
+        System.out.print("Floor (leave blank for G): ");
+        String floor = sc.nextLine().trim();
+        if (floor.isEmpty()) floor = "G";
+
+        // Grid position
         System.out.print("Grid posX posY width height (e.g. 1 1 2 2): ");
         String[] pos = sc.nextLine().trim().split("\\s+");
         int px = pos.length > 0 ? parseInt(pos[0], 0) : 0;
         int py = pos.length > 1 ? parseInt(pos[1], 0) : 0;
         int pw = pos.length > 2 ? parseInt(pos[2], 2) : 2;
         int ph = pos.length > 3 ? parseInt(pos[3], 2) : 2;
-        Shop shop = new Shop(nextId, num, ShopStatus.OPEN, area, type, px, py, pw, ph);
+
+        // Validate bounds (16×12 grid)
+        if (px < 0 || py < 0 || pw < 1 || ph < 1) {
+            System.out.println("Invalid position: values must be non-negative and size >= 1."); return;
+        }
+        if (px + pw > 16 || py + ph > 12) {
+            System.out.printf("Position out of bounds: grid is 16×12, but shop would reach col %d row %d.%n",
+                    px + pw, py + ph); return;
+        }
+
+        // Check for cell overlap on the same floor
+        Set<String> newCells = new java.util.HashSet<>();
+        for (int c = px; c < px + pw; c++)
+            for (int r = py; r < py + ph; r++)
+                newCells.add(c + "," + r);
+
+        for (Shop existing : ctx.allShops) {
+            String existingFloor = existing.getFloor() != null ? existing.getFloor() : "G";
+            if (!existingFloor.equals(floor)) continue;
+            Set<String> existingCells = new java.util.HashSet<>();
+            if (existing.hasCells()) {
+                existingCells.addAll(existing.getCells());
+            } else {
+                for (int c = existing.getPosX(); c < existing.getPosX() + existing.getWidth(); c++)
+                    for (int r = existing.getPosY(); r < existing.getPosY() + existing.getHeight(); r++)
+                        existingCells.add(c + "," + r);
+            }
+            existingCells.retainAll(newCells);
+            if (!existingCells.isEmpty()) {
+                System.out.printf("Position conflict: overlaps with shop %s (%s) at cells %s.%n",
+                        existing.getShopNum(), existing.getShopId(), existingCells);
+                System.out.print("Continue anyway? (y/N): ");
+                String confirm = sc.nextLine().trim();
+                if (!confirm.equalsIgnoreCase("y")) { System.out.println("Cancelled."); return; }
+                break;
+            }
+        }
+
+        Shop shop = new Shop(nextId, num, ShopStatus.OPEN, area, type, px, py, pw, ph, floor);
         ctx.allShops.add(shop);
         saveStateQuietly(ctx);
-        System.out.println("Shop created. id=" + shop.getShopId());
+        System.out.printf("Shop created. id=%d, floor=%s, position=(%d,%d) %dx%d%n",
+                shop.getShopId(), floor, px, py, pw, ph);
     }
 
     private static void editShopCLI(Scanner sc, AppContext ctx) {
@@ -362,14 +418,23 @@ public class ShopRentalApplication {
         System.out.print("Enter shop id: ");
         Shop shop = findShopById(ctx, Integer.parseInt(sc.nextLine().trim()));
         if (shop == null) { System.out.println("Shop not found."); return; }
-        System.out.print("New shop number: ");
+        System.out.printf("Current: num=%s, area=%.1f, type=%s, floor=%s%n",
+                shop.getShopNum(), shop.getArea(), shop.getType(), shop.getFloor());
+        System.out.print("New shop number (blank = keep): ");
         String num = sc.nextLine().trim();
-        System.out.print("New area: ");
-        double area = Double.parseDouble(sc.nextLine().trim());
-        System.out.print("New type (FNB/POPUP/SOLID): ");
-        ShopType type = parseShopType(sc.nextLine().trim());
+        if (num.isEmpty()) num = shop.getShopNum();
+        System.out.print("New area (blank = keep): ");
+        String areaStr = sc.nextLine().trim();
+        double area = areaStr.isEmpty() ? shop.getArea() : Double.parseDouble(areaStr);
+        System.out.print("New type FNB/POPUP/SOLID (blank = keep): ");
+        String typeStr = sc.nextLine().trim();
+        ShopType type = typeStr.isEmpty() ? shop.getType() : parseShopType(typeStr);
         if (type == null) { System.out.println("Invalid type."); return; }
+        System.out.print("New floor (blank = keep " + shop.getFloor() + "): ");
+        String floor = sc.nextLine().trim();
+        if (floor.isEmpty()) floor = shop.getFloor();
         shop.editStoreInfo(num, area, type);
+        shop.setFloor(floor);
         saveStateQuietly(ctx);
         System.out.println("Shop updated.");
     }
@@ -379,8 +444,15 @@ public class ShopRentalApplication {
         System.out.print("Enter shop id: ");
         Shop shop = findShopById(ctx, Integer.parseInt(sc.nextLine().trim()));
         if (shop == null) { System.out.println("Shop not found."); return; }
-        for (LeaseContract c : ctx.contracts)
-            if (c.getShop().getShopId() == shop.getShopId()) { System.out.println("Cannot delete shop with existing contracts."); return; }
+        for (LeaseContract c : ctx.contracts) {
+            if (c.getShop().getShopId() != shop.getShopId()) continue;
+            if (c.getStatus() == ContractStatus.ACTIVE) {
+                System.out.println("Cannot delete shop: it has an active lease contract (#" + c.getContractId() + ")."); return;
+            }
+            if (c.getStatus() == ContractStatus.PENDING_APPROVAL) {
+                System.out.println("Cannot delete shop: it has a pending lease contract (#" + c.getContractId() + ")."); return;
+            }
+        }
         ctx.allShops.remove(shop);
         saveStateQuietly(ctx);
         System.out.println("Shop deleted.");

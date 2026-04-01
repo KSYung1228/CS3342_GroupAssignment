@@ -69,7 +69,8 @@
               <button id="btnDrawMode" class="btn btn-sm btn-ghost hidden" type="button">✏️ Draw Shop</button>
             </div>
           </div>
-          <!-- Draw toolbar (CM only, shown when draw mode active) -->
+          <!-- Floor tabs -->
+          <div id="floorTabs" class="floor-tabs"></div>
           <div id="drawToolbar" class="draw-toolbar hidden">
             <strong>Draw mode:</strong>
             <span>Click &amp; drag empty cells to define shape, then:</span>
@@ -96,12 +97,20 @@
               </div>
               <p id="dragHint" class="drag-hint hidden">✋ Drag to move &nbsp;·&nbsp; ↘ Corner to resize &nbsp;·&nbsp; ✏️ Draw Shop to paint new shape</p>
             </div>
-            <div id="shopInfoCard" class="shop-info-card hidden">
-              <h4 id="shopInfoTitle">Shop Info</h4>
-              <div id="shopInfoBody"></div>
-              <div id="shopInfoActions" class="shop-info-actions"></div>
-            </div>
           </div>
+        </article>
+
+        <!-- CM: Floor Management -->
+        <article id="managerFloors" class="panel hidden">
+          <div class="panel-head">
+            <h3>Floor Management</h3>
+            <span class="chip">Contract Manager</span>
+          </div>
+          <div id="floorList" class="table-wrap"></div>
+          <form id="addFloorForm" class="inline-form" style="margin-top:14px">
+            <label>New Floor Name <input id="addFloorName" type="text" placeholder="e.g. 3F" style="max-width:120px" required /></label>
+            <button class="btn btn-primary btn-sm" type="submit">Add Floor</button>
+          </form>
         </article>
 
         <!-- Tenant: My Contracts -->
@@ -160,6 +169,9 @@
                     <option value="CLOSED">Closed</option>
                     <option value="UNDER_REPAIR">Under Repair</option>
                   </select>
+                </label>
+                <label>Floor
+                  <select id="shopFormFloor"></select>
                 </label>
               </div>
               <fieldset class="pos-fieldset">
@@ -233,6 +245,14 @@
       </section>
     </section>
   </main>
+
+  <!-- Floating shop info popover -->
+  <div id="shopInfoCard" class="shop-popover hidden">
+    <button id="shopPopoverClose" class="popover-close" type="button" aria-label="Close">✕</button>
+    <h4 id="shopInfoTitle">Shop Info</h4>
+    <div id="shopInfoBody"></div>
+    <div id="shopInfoActions" class="shop-info-actions"></div>
+  </div>
 
   <!-- Lease Request Modal -->
   <div id="leaseModal" class="modal-overlay hidden">
