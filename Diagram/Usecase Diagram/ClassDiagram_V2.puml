@@ -1,0 +1,316 @@
+@startuml ClassDiagram_V2
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+title Shop Rental System V2 - Class Diagram
+
+' ─────────────────────────────────────────────
+'  ENUMERATIONS
+' ─────────────────────────────────────────────
+enum ShopType {
+    FNB
+    POPUP
+    SOLID
+}
+
+enum ShopStatus {
+    OPEN
+    CLOSED
+    UNDER_REPAIR
+}
+
+enum ContractStatus {
+    DRAFT
+    PENDING_APPROVAL
+    ACTIVE
+    TERMINATED
+    EXPIRED
+}
+
+enum PaymentStatus {
+    UNVERIFIED
+    CONFIRMED
+}
+
+' ─────────────────────────────────────────────
+'  MODEL – Users
+' ─────────────────────────────────────────────
+abstract class User {
+    - userId : String
+    - username : String
+    - password : String
+    + login(inputPassword : String) : boolean
+    + changePassword(newPassword : String) : void
+    + getUserId() : String
+    + getUsername() : String
+    + getPassword() : String
+}
+
+class Tenant {
+    - contactPerson : String
+    + searchOpenStore(shops : List<Shop>, service : ShopRentalService) : List<Shop>
+    + requestRentStore(shop : Shop, service : ShopRentalService, factory : LeaseContractFactory, baseRent : double) : LeaseContract
+    + signContract(contract : LeaseContract) : void
+    + uploadMonthlyRecord(contract : LeaseContract, month : String, sales : double, strategy : CommissionStrategy, service : ShopRentalService) : Payment
+    + getContactPerson() : String
+}
+
+class ContractManager {
+    + permitRequest(contract : LeaseContract) : boolean
+    + applyApproveContractService(contract : LeaseContract, service : ShopRentalService) : void
+    + manageAllStore(shop : Shop, status : ShopStatus) : void
+}
+
+class Accounting {
+    + confirmPaymentTransfer(payment : Payment) : boolean
+    + alterRentByStoreStatus(contract : LeaseContract, shop : Shop) : void
+    + inspectStoreStatus(shop : Shop) : void
+}
+
+class SystemAdmin {
+    - userPermissions : Map<String, String>
+    + createAccount(role : String, userId : String, username : String, password : String) : User
+    + changeUserPermission(userId : String, permission : String) : void
+    + getPermission(userId : String) : String
+    + getUserPermissionsSnapshot() : Map<String, String>
+    + replaceUserPermissions(permissions : Map<String, String>) : void
+}
+
+User <|-- Tenant
+User <|-- ContractManager
+User <|-- Accounting
+User <|-- SystemAdmin
+
+' ─────────────────────────────────────────────
+'  MODEL – Shop
+' ─────────────────────────────────────────────
+class Shop {
+    - shopId : int
+    - shopNum : String
+    - status : ShopStatus
+    - area : double
+    - type : ShopType
+    - floor : String
+    - posX : int
+    - posY : int
+    - width : int
+    - height : int
+    - cells : List<String>
+    + updateStoreStatus(newStatus : ShopStatus) : void
+    + editStoreInfo(newShopNum : String, newArea : double, newType : ShopType) : void
+    + setFloor(floor : String) : void
+    + setPosition(posX : int, posY : int, width : int, height : int) : void
+    + setCells(cells : List<String>) : void
+    + hasCells() : boolean
+    + getShopId() : int
+    + getShopNum() : String
+    + getStatus() : ShopStatus
+    + getArea() : double
+    + getType() : ShopType
+    + getFloor() : String
+}
+
+Shop --> ShopStatus
+Shop --> ShopType
+
+' ─────────────────────────────────────────────
+'  MODEL – LeaseContract
+' ─────────────────────────────────────────────
+class LeaseContract {
+    - contractId : int
+    - baseRent : double
+    - commissionRate : double
+    + calculateTotalRent(commissionAmount : double) : double
+    + requestApproval() : void
+    + approve() : void
+    + terminate() : void
+    + expire() : void
+    + restoreStatus(status : ContractStatus) : void
+    + getContractId() : int
+    + getStatus() : ContractStatus
+    + getBaseRent() : double
+    + getCommissionRate() : double
+    + setBaseRent(v : double) : void
+    + setCommissionRate(v : double) : void
+}
+
+LeaseContract --> Shop
+LeaseContract --> Tenant
+LeaseContract --> "state" ContractState
+
+' ─────────────────────────────────────────────
+'  MODEL – Payment & SalesRecord
+' ─────────────────────────────────────────────
+class Payment {
+    - paymentId : int
+    - amount : double
+    - status : PaymentStatus
+    + verifyPayment() : boolean
+    + getPaymentId() : int
+    + getAmount() : double
+    + getStatus() : PaymentStatus
+}
+
+Payment --> PaymentStatus
+
+class SalesRecord {
+    - recordId : int
+    - month : String
+    - totalSales : double
+    - commissionAmount : double
+    + calculateCommission(strategy : CommissionStrategy, commissionRate : double) : void
+    + getRecordId() : int
+    + getMonth() : String
+    + getTotalSales() : double
+    + getCommissionAmount() : double
+}
+
+SalesRecord --> CommissionStrategy
+
+' ─────────────────────────────────────────────
+'  STATE PATTERN
+' ─────────────────────────────────────────────
+interface ContractState {
+    + getStatus() : ContractStatus
+    + requestApproval() : ContractState
+    + approve() : ContractState
+    + terminate() : ContractState
+    + expire() : ContractState
+}
+
+abstract class BaseContractState {
+    + requestApproval() : ContractState
+    + approve() : ContractState
+    + terminate() : ContractState
+    + expire() : ContractState
+}
+
+class DraftState {
+    + getStatus() : ContractStatus
+    + requestApproval() : ContractState
+}
+
+class PendingApprovalState {
+    + getStatus() : ContractStatus
+    + approve() : ContractState
+    + terminate() : ContractState
+}
+
+class ActiveState {
+    + getStatus() : ContractStatus
+    + terminate() : ContractState
+    + expire() : ContractState
+}
+
+class TerminatedState {
+    + getStatus() : ContractStatus
+}
+
+class ExpiredState {
+    + getStatus() : ContractStatus
+}
+
+ContractState <|.. BaseContractState
+BaseContractState <|-- DraftState
+BaseContractState <|-- PendingApprovalState
+BaseContractState <|-- ActiveState
+BaseContractState <|-- TerminatedState
+BaseContractState <|-- ExpiredState
+
+ContractState --> ContractStatus
+
+' ─────────────────────────────────────────────
+'  FACTORY PATTERN
+' ─────────────────────────────────────────────
+interface LeaseContractFactory {
+    + createContract(contractId : int, shop : Shop, tenant : Tenant, baseRent : double) : LeaseContract
+}
+
+class StandardLeaseFactory {
+    - STANDARD_COMMISSION_RATE : double = 0.08
+    + createContract(contractId : int, shop : Shop, tenant : Tenant, baseRent : double) : LeaseContract
+}
+
+class ShortTermLeaseFactory {
+    - SHORT_TERM_COMMISSION_RATE : double = 0.12
+    + createContract(contractId : int, shop : Shop, tenant : Tenant, baseRent : double) : LeaseContract
+}
+
+LeaseContractFactory <|.. StandardLeaseFactory
+LeaseContractFactory <|.. ShortTermLeaseFactory
+LeaseContractFactory ..> LeaseContract : creates
+
+' ─────────────────────────────────────────────
+'  STRATEGY PATTERN
+' ─────────────────────────────────────────────
+interface CommissionStrategy {
+    + calculateCommission(totalSales : double, baseRate : double) : double
+}
+
+class StandardCommissionStrategy {
+    + calculateCommission(totalSales : double, baseRate : double) : double
+}
+
+class ProgressiveCommissionStrategy {
+    + calculateCommission(totalSales : double, baseRate : double) : double
+}
+
+CommissionStrategy <|.. StandardCommissionStrategy
+CommissionStrategy <|.. ProgressiveCommissionStrategy
+
+' ─────────────────────────────────────────────
+'  OBSERVER PATTERN
+' ─────────────────────────────────────────────
+interface RentalEventListener {
+    + onEvent(event : RentalEvent) : void
+}
+
+class RentalEvent {
+    - type : String
+    - message : String
+    - timestamp : LocalDateTime
+    + getType() : String
+    + getMessage() : String
+    + getTimestamp() : LocalDateTime
+}
+
+class RentalEventBus {
+    - listeners : List<RentalEventListener>
+    + subscribe(listener : RentalEventListener) : void
+    + publish(event : RentalEvent) : void
+}
+
+class AuditLogListener {
+    + onEvent(event : RentalEvent) : void
+}
+
+RentalEventListener <|.. AuditLogListener
+RentalEventBus --> "listeners *" RentalEventListener
+RentalEventBus ..> RentalEvent : publishes
+
+' ─────────────────────────────────────────────
+'  SERVICE
+' ─────────────────────────────────────────────
+class ShopRentalService {
+    - nextContractId : int
+    - nextRecordId : int
+    - nextPaymentId : int
+    + findOpenShops(shops : List<Shop>) : List<Shop>
+    + createLeaseRequest(tenant : Tenant, shop : Shop, factory : LeaseContractFactory, baseRent : double) : LeaseContract
+    + approveContract(contract : LeaseContract) : void
+    + submitMonthlySales(contract : LeaseContract, month : String, sales : double, strategy : CommissionStrategy) : Payment
+    + getNextContractId() : int
+    + setNextContractId(v : int) : void
+    + getNextRecordId() : int
+    + setNextRecordId(v : int) : void
+    + getNextPaymentId() : int
+    + setNextPaymentId(v : int) : void
+}
+
+ShopRentalService --> RentalEventBus
+ShopRentalService ..> LeaseContractFactory : uses
+ShopRentalService ..> CommissionStrategy : uses
+ShopRentalService ..> SalesRecord : creates
+ShopRentalService ..> Payment : creates
+
+@enduml
