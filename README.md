@@ -71,7 +71,7 @@ The system is built around the following core entities, as defined in our UML cl
 https://docs.google.com/document/d/1oIB0DIR1F6UC53HkZp9HEkb2BmRGBoxC9GXrg91q5r4/edit?usp=sharing
 
 ## Presentation PPT
-https://docs.google.com/document/d/1oIB0DIR1F6UC53HkZp9HEkb2BmRGBoxC9GXrg91q5r4/edit?usp=sharing
+[https://docs.google.com/document/d/1oIB0DIR1F6UC53HkZp9HEkb2BmRGBoxC9GXrg91q5r4/edit?usp=sharing](https://docs.google.com/presentation/d/1EsOgJXvMhsvNTIERde50BR9EVFmZtBXIYEtsXazH0H4/edit?usp=sharing)
 
 ## License
 This project is for educational purposes only as part of the CS3342 course.
