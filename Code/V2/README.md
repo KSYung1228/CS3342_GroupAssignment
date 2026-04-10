@@ -50,7 +50,7 @@ PowerShell:
 
 CMD:
 ```cmd
-mvnw.cmd -DskipTests compile exec:java -Dexec.mainClass=com.shoprentals.v2.api.V2ApiServerApplication
+run ShopRentalApplication.java
 ```
 
 **Step 2 — Open browser:**
